@@ -4,41 +4,40 @@ import webbrowser
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from dash import dcc, html
+from dash import dcc, html, callback
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State, ALL
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 img_path = './assets/img'
-logo = '{}/logo.png'.format(img_path)
-btn_sidebar = '{}/btn_sidebar.png'.format(img_path)
+logo = f'{img_path}/logo.png'
+btn_sidebar = f'{img_path}/btn_sidebar.png'
+btn_field = f'{img_path}/btn_field.png'
 url = dcc.Location(id="url")
 
+global all_fields
 df = pd.read_csv('test.csv')
 all_fields = list(df.columns)
-
-global selected_fields
-selected_fields = []
 
 navbar = dbc.Navbar(
     [
         html.A(
-            # Use row and col to control vertical alignment of logo / brand
+            # 利用 row, col 來控制排版
             dbc.Row(
                 [
-                    dbc.Col(html.Img(src=logo, height="50px", style={'background-color':'white'}) ),
+                    dbc.Col(html.Img(src=logo, height="50px", style={'background-color':'white'})),
                     dbc.Col(dbc.NavbarBrand("NCKU", className = "ml-2", style={'fontSize': 30})),
                 ],
             ),
             href="https://www.ncku.edu.tw/",
-        ),
-        
+        )
     ],
     color="dark",
     dark=True,
-    sticky='top'
+    sticky='top',
 )
+
 SIDEBAR_STYLE={
     "position": "fixed",
     "top": 127.5,
@@ -46,21 +45,21 @@ SIDEBAR_STYLE={
     "bottom": 0,
     "width": "16rem",
     "height": "100%",
-    "z-index": 1,
+    "z-index": 0,
     "overflow-x": "hidden",
     "transition": "all 0.5s",
     "padding": "0.5rem 1rem",
     "background-color": "#f8f9fa",
 }
 
-SIDEBAR_HIDEN = {
+SIDEBAR_HIDDEN = {
     "position": "fixed",
     "top": 127.5,
     "left": "-16rem",
     "bottom": 0,
     "width": "16rem",
     "height": "100%",
-    "z-index": 1,
+    "z-index": 0,
     "overflow-x": "hidden",
     "transition": "all 0.5s",
     "padding": "0rem 0rem",
@@ -72,7 +71,19 @@ SIDEBAR_HIDEN = {
 CONTENT_STYLE = {
     "transition": "margin-left .5s",
     "margin-top": 55,
-    "margin-left": "17rem",
+    "margin-left": "18rem",
+    "margin-right": "1rem",
+    "padding": "2rem 1rem",
+    "background-color": "#f8f9fa",
+    'fontSize': 10,
+    'width': 284,
+    'zIndex':1,
+}
+
+CONTENT_HIDDEN = {
+    "transition": "margin-left .5s",
+    "margin-top": 55,
+    "margin-left": "2rem",
     "margin-right": "1rem",
     "padding": "2rem 1rem",
     "background-color": "#f8f9fa",
@@ -81,35 +92,49 @@ CONTENT_STYLE = {
     'zIndex':1,
 }
 
-CONTENT_STYLE1 = {
+CONTENT2_STYLE = {
     "transition": "margin-left .5s",
+    "margin-left": 2,
     "margin-top": 55,
-    "margin-left": "1rem",
     "margin-right": "1rem",
-    "padding": "2rem 1rem",
-    "background-color": "#f8f9fa",
+    "padding": "1rem 1rem",
+    "background-color": "red",
     'fontSize': 10,
-    'width':284,
     'zIndex':1,
+    'border':'1px black solid',
+}
+CONTENT2_STYLE1 = {
+    "transition": "margin-left .5s",
+    'left':-284,
+    "margin-left": 2,
+    "margin-top": 55,
+    "margin-right": "1rem",
+    "padding": "1rem 1rem",
+    "background-color": "red",
+    'fontSize': 10,
+    'zIndex':1,
+    'border':'1px black solid',
 }
 
 sidebar = html.Div(
-    [
-        html.H2("Sidebar", className="display-4"),
-        html.Hr(),
-        html.P(
-            "A simple sidebar layout with navigation links", className="lead"
-        ),
-        dbc.Nav(
-            [
-                dbc.NavLink("Home", href="/Home", id="page-1-link"),
-                dbc.NavLink("Discover", href="/Discover", id="page-2-link"),
-                dbc.NavLink("Security-Events", href="/Security-Events", id="page-3-link"),
-            ],
-            vertical=True,
-            pills=True,
-        ),
-    ],
+    dbc.Col(
+        [
+            html.H2("Sidebar", className="display-4"),
+            html.Hr(),
+            html.P(
+                "A simple sidebar layout with navigation links", className="lead"
+            ),
+            dbc.Nav(
+                [
+                    dbc.NavLink("Home", href="/Home", id="page-1-link"),
+                    dbc.NavLink("Discover", href="/Discover", id="page-2-link"),
+                    dbc.NavLink("Security-Events", href="/Security-Events", id="page-3-link"),
+                ],
+                vertical=True,
+                pills=True,
+            ),
+        ],
+    ),
     id="sidebar",
     style=SIDEBAR_STYLE,
 )
@@ -119,7 +144,8 @@ menu_bar = html.Div(
         dbc.Row(
             [
                 html.Img(src=btn_sidebar, width=50, id='btn_Sidebar'),
-                html.P(id='test', style={'margin-top':'13px', 'margin-left':'10px', 'fontSize':17}),
+                #html.Img(src=btn_field, width=50, id='btn_field'),
+                html.P(id='path', style={'margin-top':'13px', 'margin-left':'10px', 'fontSize':17}),
             ],
             style={"margin-left": "6px"},
         ),
@@ -132,6 +158,25 @@ content = html.Div(
     id="page-content",
 )
 
+content2 = dbc.Col(
+    html.P('hi'),
+    style=CONTENT2_STYLE,
+    id='content2',
+)
+
+all_content = html.Div(
+    [
+        dbc.Row(
+            [
+                content,
+                content2
+            ]
+        )
+    ],
+    style={'width':'100%', 'flex-direction': 'row'}
+)
+
+# 網頁 layout
 app.layout = html.Div(
     [
         dcc.Store(id='side_click'),
@@ -139,8 +184,11 @@ app.layout = html.Div(
         navbar,
         menu_bar,
         sidebar,
-        content,
+        all_content,
+        # content,
+        # content2,
     ],
+    style={'width':'100%'}
 )
 
 # 當 btn_sidebar 觸發時, sidebar 和 content 的位置會發生改變
@@ -150,7 +198,6 @@ app.layout = html.Div(
         Output("page-content", "style"),
         Output("side_click", "data"),
     ],
-
     [Input("btn_Sidebar", "n_clicks")],
     [
         State("side_click", "data"),
@@ -159,8 +206,8 @@ app.layout = html.Div(
 def toggle_sidebar(n, nclick):
     if n:
         if nclick == "SHOW":
-            sidebar_style = SIDEBAR_HIDEN
-            content_style = CONTENT_STYLE1
+            sidebar_style = SIDEBAR_HIDDEN
+            content_style = CONTENT_HIDDEN
             cur_nclick = "HIDDEN"
         else:
             sidebar_style = SIDEBAR_STYLE
@@ -169,6 +216,7 @@ def toggle_sidebar(n, nclick):
     else:
         sidebar_style = SIDEBAR_STYLE
         content_style = CONTENT_STYLE
+        #content2_style = CONTENT2_STYLE1
         cur_nclick = 'SHOW'
 
     return sidebar_style, content_style, cur_nclick
@@ -181,7 +229,7 @@ all_pages = ['/Home','/Discover','/Security-Events']
 @app.callback(
     [
         [Output(f"page-{i}-link", "active") for i in range(1, 4)],
-        Output('test', 'children')
+        Output('path', 'children')
     ],
     [
         Input("url", "pathname"),
@@ -198,8 +246,8 @@ def toggle_active_links(pathname):
 add_collapse_combines = []
 del_collapse_combines = []
 field_style = {'margin-top':'7px', 'margin-left':'50px', "width": 120}
-add_btn_style = {'fontSize':10,'margin-top':'4.98px', 'color':'green','margin-bottom':'5px', 'align':'center', "width": 50}
-del_btn_style = {'fontSize':10,'margin-top':'4.98px', 'color':'red','margin-bottom':'5px', 'align':'center', "width": 50}
+add_btn_style = {'color':'green', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
+del_btn_style = {'color':'red', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
 
 for i in range(len(all_fields)):
     # 新增 add collapsed fields, btns
@@ -210,7 +258,7 @@ for i in range(len(all_fields)):
         is_open=True,
     )
     add_collapse_btn = dbc.Collapse(
-        html.Button('+ add', id=f'add_btn_{i}', style=add_btn_style),
+        html.Button('+ add', id=f'add_btn_{i}', style=add_btn_style, n_clicks=0),
         id=f"{i}",
         is_open=True,
     )
@@ -243,38 +291,66 @@ for i in range(len(all_fields)):
     )
     del_collapse_combines.append(del_collapse_combine)
 
+FIELDS_HIDDEN_STYLE = {
+    "left": "-10rem",
+    "bottom": 0,
+    "width": "16rem",
+    "height": "100%",
+    #"z-index": 1,
+    "overflow-x": "hidden",
+    #"transition": "all 0.5s",
+    "padding": "0rem 0rem",
+    "background-color": "#f8f9fa",
+}
+
 
 @app.callback(
-    Output("page-content", "children"), 
-    [Input("url", "pathname")]
+    Output("page-content", "children"),
+    [
+        Input("url", "pathname"),
+        Input("page-content", "children"),
+    ]
 )
-def render_page_content(pathname):
+def render_page_content(pathname, children):
     if pathname in ["/", "/Home"]:
-        fields_bar = html.Div(
+        fields_bar = dbc.Col(
             [
                 dbc.Row(
                     [
-                        html.B('Selected fields:', style={'fontSize':20, 'margin-left':'6px'})      
+                        dbc.Col(style={"width": 50}),
+                        #html.Img(src=btn_field, width=50, id='btn_field')
                     ],
                 ),
-                dbc.Row(
+                dbc.Container(
                     [
-                        del_collapse_combine for del_collapse_combine in del_collapse_combines
-                    ],
-                ),
-                html.Hr(style={'borderColor':'black'}),
-                dbc.Row(
-                    [
-                        html.B('Available fields:', style={'fontSize':20, 'margin-left':'6px'})
-                    ],
-                ),
-                dbc.Row(
-                    [
-                        add_collapse_combine for add_collapse_combine in add_collapse_combines
+                        dbc.Row(
+                            [
+                                html.B('Selected fields:', style={'fontSize':20})      
+                            ],
+                        ),
+                        dbc.Row(
+                            [
+                                del_collapse_combine for del_collapse_combine in del_collapse_combines
+                            ],
+                        ),
+                        html.Hr(style={'borderColor':'black'}),
+                        dbc.Row(
+                            [
+                                html.B('Available fields:', style={'fontSize':20})
+                            ],
+                        ),
+                        dbc.Row(
+                            [
+                                add_collapse_combine for add_collapse_combine in add_collapse_combines
+                            ],
+                        ),
                     ],
                 ),
             ],
-        )
+            id='fields_bar',
+        ),
+        #)
+
         return fields_bar #html.P("歡迎來到首頁")
 
     elif pathname == "/Discover":
@@ -299,23 +375,25 @@ def render_page_content(pathname):
 
 # add_btn 觸發事件 => {add_btn, add_fields} 將消失, {del_btn, del_fields} 將出現
 # del_btn 觸發事件 => {add_btn, add_fields} 將出現, {del_btn, del_fields} 將消失
-global add_next_click
+global selected_fields, add_next_click
+selected_fields = []
 add_next_click = [1 for i in range(len(all_fields))]
 
 def click_btn(add_clicks, del_clicks, btn_name):
-    global add_next_click, selected_fields
+    global add_next_click, selected_fields, all_fields
 
     # 監聽 add_btn 是否被按, 若有則新增該 field
-    if add_clicks == add_next_click[int(btn_name)]:
-        add_next_click[int(btn_name)] += 1
-        selected_fields.append(btn_name)
+    field_idx = int(btn_name)
+    if add_clicks == add_next_click[field_idx]:
+        add_next_click[field_idx] += 1
+        selected_fields.append(all_fields[field_idx])
         print(selected_fields)
         return [False, False,True, True]
 
     # add_btn 沒被按 => 則為 del_btn 被按, 或者add_btn, del_btn都沒被按(網頁初始狀態)
     else: 
         try:
-            selected_fields.remove(btn_name)
+            selected_fields.remove(all_fields[field_idx])
             print(selected_fields)
         except:
             pass
@@ -327,7 +405,6 @@ for i in range(len(all_fields)):
         [
             Output(f'add_collapse_fields_{i}', 'is_open'),
             Output(f'{i}', 'is_open'),
-            #Output(f'add_collapse_combine_{i}', 'is_open'),
             Output(f'del_collapse_fields_{i}', 'is_open'),
             Output(f'del_{i}', 'is_open'),
         ],
