@@ -88,6 +88,7 @@ navbar = dbc.Navbar(
     color="dark",
     dark=True,
     sticky='top',
+    style={'width':'100%'},
 )
 
 SIDEBAR_STYLE={
@@ -134,7 +135,7 @@ CONTENT_STYLE = {
     'fontSize': 10,
     #'width': 284,
     'width': 300,
-    "maxHeight": "1041px",
+    "maxHeight": "720px",
     'zIndex':1,
     'border':'1px black solid',
     "overflow": "scroll",
@@ -150,7 +151,7 @@ CONTENT_STYLE1 = {
     'fontSize': 10,
     #'width':284,
     'width': 300,
-    "maxHeight": "650px",
+    "maxHeight": "720px",
     'zIndex':1,
     'border':'1px black solid',
     "overflow": "scroll",
@@ -174,9 +175,9 @@ sidebar = html.Div(
         [
             html.H2("Sidebar", className="display-4"),
             html.Hr(),
-            html.P(
-                "A simple sidebar layout with navigation links", className="lead"
-            ),
+            # html.P(
+            #     "A simple sidebar layout with navigation links", className="lead"
+            # ),
             dbc.Nav(
                 [
                     dbc.NavLink("Home", href="/Home", id="page-1-link"),
@@ -215,7 +216,7 @@ table = dash_table.DataTable(
     columns=[{'name': column, 'id': column} for column in df.columns],
     data=df.to_dict('records'),
     virtualization=True,
-    style_cell={'textAlign': 'left'},
+    style_cell={'textAlign': 'left', 'maxWidth': 135}, #'minHeight': '100%'},
     sort_action='custom',
     sort_mode='multi',
     #filter_action="native",
@@ -231,7 +232,14 @@ table = dash_table.DataTable(
         'fontWeight': 'bold',
         'textAlign': 'left',
         'border':'1px black solid',
+        'minWidth': '100%'
     },
+    tooltip_data=[
+        {
+            column: {'value': str(value), 'type': 'markdown'}
+            for column, value in row.items()
+        } for row in df.to_dict('records')
+    ],
     #fixed_rows={'headers': True},
     id='table',
 )
@@ -250,11 +258,12 @@ graph = dcc.Graph(
         'watermark': True,
         'modeBarButtonsToRemove': ['pan2d','select2d'],
     },
-    style={'width':900, 'border':'1px black solid', 'zIndex':5, "frameMargins": 55,},
+    style={'border':'1px black solid', 'zIndex':5, "frameMargins": 55,},
 )
 
 content2 = dbc.Col(
     [
+        html.H3(f'共{len(df)}筆資料', style={'textAlign': 'center'}),
         graph,
         html.Br(),
         table,
@@ -278,14 +287,13 @@ all_content = html.Div(
 # 網頁 layout
 layout = html.Div(
     [
+        #dbc.Spinner(type="grow", color="primary", fullscreen=True, id="initial-spinner"),
         dcc.Store(id='side_click'),
         url,
         navbar,
         menu_bar,
         sidebar,
         all_content,
-        # content,
-        # content2,
     ],
     style={'width':'100%'}
 )
@@ -406,13 +414,13 @@ def render_page_content(pathname, children):
 
     elif pathname == "/Discover":
         content = html.Div(
-            html.P("This is the content of page 2. Yay!"),
+            html.P("Discover Page"),
             #style=DISCOVER_CONTENT_STYLE
         )
         return content
 
     elif pathname == "/Security-Events":
-        return html.P("Oh cool, this is page 3!")
+        return html.P("Security-Events Page")
 
     # If the user tries to reach a different page, return a 404 message
     return dbc.Jumbotron(
@@ -479,29 +487,43 @@ for i in range(len(all_fields)):
 
 @callback(
     Output('content2', 'children'),
-    Input('submit_fields', 'n_clicks'),
+    Input('submit_fields', 'n_clicks'),   
 )
 def update_table(n_clicks):
     global table, graph
     if n_clicks:
         # 如果沒有 field 被選取, 則顯示所有 fields
         if selected_fields == []:
-            return [graph, table]
+            dataNum = html.H3(f'共{len(df)}筆資料', style={'textAlign': 'center'})
+            return [dataNum, graph, html.Br(), table]
 
         # 若有 field 被選取, 顯示 new table
+        selected_df = df.copy()
+        selected_df = selected_df[selected_fields].dropna()
+
+        if len(selected_df) == 0:
+            message = html.B('無符合條件的資料')
+            return [message]
+
         new_table = dash_table.DataTable(
             columns=[{'name': column, 'id': column} for column in selected_fields],
-            data=df.to_dict('records'),
+            data=selected_df.to_dict('records'),
             virtualization=True,
-            style_cell={'textAlign': 'left'},
+            style_cell={'textAlign': 'left', 'minHeight': '100%'},
             sort_action='custom',
             sort_mode='multi',
-            filter_action="native",
+            #filter_action="native",
             style_data_conditional=[
                 {
                     'if': {'row_index': 'odd'},
                     'backgroundColor': 'rgb(220, 220, 220)',
                 }
+            ],
+            tooltip_data=[
+                {
+                    column: {'value': str(value), 'type': 'markdown'}
+                    for column, value in row.items()
+                } for row in selected_df.to_dict('records')
             ],
             style_header={
                 'backgroundColor': 'rgb(210, 210, 210)',
@@ -511,5 +533,30 @@ def update_table(n_clicks):
             },
             id='table',
         )
-        return [graph, new_table]
+
+        graph_df = df.copy()
+        graph_fields = selected_fields.copy()
+        if 'timestamp' not in selected_fields:
+            graph_fields = selected_fields.copy()
+            graph_fields.insert(0, 'timestamp')
+            print(graph_fields)
+        graph_df = graph_df[graph_fields].dropna()
+        bar_chart = get_statics(graph_df)
+        dataNum = html.H3(f'共{len(graph_df)}筆資料', style={'textAlign': 'center'})
+
+        new_graph = dcc.Graph(
+            figure=bar_chart,
+            id='graph', clickData=None, hoverData=None,
+            config={
+                'staticPlot': False,     # True, False
+                'scrollZoom': True,      # True, False
+                'doubleClick': 'reset',  # 'reset', 'autosize' or 'reset+autosize', False
+                'showTips': False,       # True, False
+                'displayModeBar': True,  # True, False, 'hover'
+                'watermark': True,
+                'modeBarButtonsToRemove': ['pan2d','select2d'],
+            },
+            style={'border':'1px black solid', 'zIndex':5, "frameMargins": 55,},
+        )
+        return [dataNum, new_graph, html.Br(), new_table]
     return dash.no_update
