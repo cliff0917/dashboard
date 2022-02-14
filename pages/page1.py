@@ -4,12 +4,11 @@ import webbrowser
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-#import dash_table
 from dash import dcc, html, callback, dash_table
-#import dash_core_components as dcc
-#import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State, ALL
+
+from statics import get_statics
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
@@ -135,7 +134,7 @@ CONTENT_STYLE = {
     'fontSize': 10,
     #'width': 284,
     'width': 300,
-    "maxHeight": "650px",
+    "maxHeight": "1041px",
     'zIndex':1,
     'border':'1px black solid',
     "overflow": "scroll",
@@ -211,7 +210,7 @@ content = html.Div(
     id="page-content",
 )
 
-global table
+global table, graph
 table = dash_table.DataTable(
     columns=[{'name': column, 'id': column} for column in df.columns],
     data=df.to_dict('records'),
@@ -219,7 +218,7 @@ table = dash_table.DataTable(
     style_cell={'textAlign': 'left'},
     sort_action='custom',
     sort_mode='multi',
-    filter_action="native",
+    #filter_action="native",
     style_data_conditional=[
         {
             'if': {'row_index': 'odd'},
@@ -236,8 +235,30 @@ table = dash_table.DataTable(
     #fixed_rows={'headers': True},
     id='table',
 )
+
+bar_chart = get_statics(df)
+
+graph = dcc.Graph(
+    figure=bar_chart,
+    id='graph', clickData=None, hoverData=None,
+    config={
+        'staticPlot': False,     # True, False
+        'scrollZoom': True,      # True, False
+        'doubleClick': 'reset',  # 'reset', 'autosize' or 'reset+autosize', False
+        'showTips': False,       # True, False
+        'displayModeBar': True,  # True, False, 'hover'
+        'watermark': True,
+        'modeBarButtonsToRemove': ['pan2d','select2d'],
+    },
+    style={'width':900, 'border':'1px black solid', 'zIndex':5, "frameMargins": 55,},
+)
+
 content2 = dbc.Col(
-    table,
+    [
+        graph,
+        html.Br(),
+        table,
+    ],
     id='content2',
     style=CONTENT2_STYLE,
 )
@@ -402,10 +423,10 @@ def render_page_content(pathname, children):
         ]
     )
 
-###########################################
+#------------------------------------------
 #   Fields 新增, 刪除 按鈕的觸發事件
 #   data_table 的更新
-###########################################
+#------------------------------------------
 
 # add_btn 觸發事件 => {add_btn, add_fields} 將消失, {del_btn, del_fields} 將出現
 # del_btn 觸發事件 => {add_btn, add_fields} 將出現, {del_btn, del_fields} 將消失
@@ -448,7 +469,6 @@ for i in range(len(all_fields)):
             Output(f'{i}', 'is_open'),
             Output(f'del_collapse_fields_{i}', 'is_open'),
             Output(f'del_{i}', 'is_open'),
-            #Output(f'table_{i}', 'children'),
         ],
         [
             Input(f'add_btn_{i}', 'n_clicks'),
@@ -462,11 +482,13 @@ for i in range(len(all_fields)):
     Input('submit_fields', 'n_clicks'),
 )
 def update_table(n_clicks):
-    global table
+    global table, graph
     if n_clicks:
+        # 如果沒有 field 被選取, 則顯示所有 fields
         if selected_fields == []:
-            return table
-        # 顯示 table
+            return [graph, table]
+
+        # 若有 field 被選取, 顯示 new table
         new_table = dash_table.DataTable(
             columns=[{'name': column, 'id': column} for column in selected_fields],
             data=df.to_dict('records'),
@@ -489,5 +511,5 @@ def update_table(n_clicks):
             },
             id='table',
         )
-        return new_table
+        return [graph, new_table]
     return dash.no_update
