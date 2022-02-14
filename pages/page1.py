@@ -4,7 +4,10 @@ import webbrowser
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+#import dash_table
 from dash import dcc, html, callback, dash_table
+#import dash_core_components as dcc
+#import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State, ALL
 
@@ -208,13 +211,33 @@ content = html.Div(
     id="page-content",
 )
 
+global table
+table = dash_table.DataTable(
+    columns=[{'name': column, 'id': column} for column in df.columns],
+    data=df.to_dict('records'),
+    virtualization=True,
+    style_cell={'textAlign': 'left'},
+    sort_action='custom',
+    sort_mode='multi',
+    filter_action="native",
+    style_data_conditional=[
+        {
+            'if': {'row_index': 'odd'},
+            'backgroundColor': 'rgb(220, 248, 248)',
+        }
+    ],
+    style_header={
+        'backgroundColor': 'rgb(230, 230, 230)',
+        'color': 'black',
+        'fontWeight': 'bold',
+        'textAlign': 'left',
+        'border':'1px black solid',
+    },
+    #fixed_rows={'headers': True},
+    id='table',
+)
 content2 = dbc.Col(
-    dash_table.DataTable(
-        columns=[{'name': column, 'id': column} for column in df.columns],
-        data=df.to_dict('records'),
-        virtualization=True,
-        id='table',
-    ),
+    table,
     id='content2',
     style=CONTENT2_STYLE,
 )
@@ -439,12 +462,32 @@ for i in range(len(all_fields)):
     Input('submit_fields', 'n_clicks'),
 )
 def update_table(n_clicks):
+    global table
     if n_clicks:
+        if selected_fields == []:
+            return table
         # 顯示 table
-        table = dash_table.DataTable(
+        new_table = dash_table.DataTable(
             columns=[{'name': column, 'id': column} for column in selected_fields],
             data=df.to_dict('records'),
             virtualization=True,
+            style_cell={'textAlign': 'left'},
+            sort_action='custom',
+            sort_mode='multi',
+            filter_action="native",
+            style_data_conditional=[
+                {
+                    'if': {'row_index': 'odd'},
+                    'backgroundColor': 'rgb(220, 220, 220)',
+                }
+            ],
+            style_header={
+                'backgroundColor': 'rgb(210, 210, 210)',
+                'color': 'black',
+                'fontWeight': 'bold',
+                'textAlign': 'left',
+            },
+            id='table',
         )
-        return table
+        return new_table
     return dash.no_update

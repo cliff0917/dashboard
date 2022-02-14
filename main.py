@@ -1,7 +1,7 @@
 import dash
 
 
-from pages import page1, page2
+from pages import page1#, page2
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
