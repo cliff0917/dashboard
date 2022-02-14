@@ -1,8 +1,7 @@
 *.ipynb
-*.csv
 tmp.py
 sudocmd.py
 *.txt
 app.py
-pages
+pages/page2.py
 test.py

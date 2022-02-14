@@ -8,8 +8,6 @@ from dash import dcc, html, callback, dash_table
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State, ALL
 
-from components import navbar
-
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 img_path = './assets/img'
@@ -21,6 +19,56 @@ url = dcc.Location(id="url")
 global all_fields
 df = pd.read_csv('test.csv')
 all_fields = list(df.columns)
+
+# 新增 field, btn
+add_collapse_combines = []
+del_collapse_combines = []
+field_style = {'margin-top':'7px', 'margin-left':'50px', "width": 120}
+add_btn_style = {'color':'green', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
+del_btn_style = {'color':'red', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
+
+for i in range(len(all_fields)):
+    # 新增 add collapsed fields, btns
+    field = all_fields[i]
+    add_collapse_field = dbc.Collapse(
+        html.P(field, style=field_style),
+        id=f"add_collapse_fields_{i}",
+        is_open=True,
+    )
+    add_collapse_btn = dbc.Collapse(
+        html.Button('+ add', id=f'add_btn_{i}', style=add_btn_style, n_clicks=0),
+        id=f"{i}",
+        is_open=True,
+    )
+    add_collapse_combine = dbc.Row(
+        [
+            add_collapse_field, 
+            dbc.Col(style={"width": 70}),
+            add_collapse_btn,
+        ]
+    )
+    add_collapse_combines.append(add_collapse_combine)
+
+    # 新增 del collapsed fields, btns
+    del_collapse_field = dbc.Collapse(
+        html.P(field, style=field_style),
+        id=f"del_collapse_fields_{i}",
+        is_open=False,
+    )
+    del_collapse_btn = dbc.Collapse(
+        html.Button('- del', id=f'del_btn_{i}', style=del_btn_style),
+        id=f"del_{i}",
+        is_open=False,
+    )
+    del_collapse_combine = dbc.Row(
+        [
+            del_collapse_field, 
+            dbc.Col(style={"width": 70}),
+            del_collapse_btn,
+        ]
+    )
+    del_collapse_combines.append(del_collapse_combine)
+
 
 navbar = dbc.Navbar(
     [
@@ -82,12 +130,15 @@ CONTENT_STYLE = {
     "padding": "2rem 1rem",
     "background-color": "yellow",
     'fontSize': 10,
-    'width': 284,
+    #'width': 284,
+    'width': 300,
+    "maxHeight": "650px",
     'zIndex':1,
     'border':'1px black solid',
+    "overflow": "scroll",
 }
 
-CONTENT_HIDDEN = {
+CONTENT_STYLE1 = {
     "transition": "margin-left .5s",
     "margin-top": 55,
     "margin-left": "2rem",
@@ -95,9 +146,12 @@ CONTENT_HIDDEN = {
     "padding": "2rem 1rem",
     "background-color": "yellow",
     'fontSize': 10,
-    'width':284,
+    #'width':284,
+    'width': 300,
+    "maxHeight": "650px",
     'zIndex':1,
     'border':'1px black solid',
+    "overflow": "scroll",
 }
 
 CONTENT2_STYLE = {
@@ -111,7 +165,6 @@ CONTENT2_STYLE = {
     'zIndex':1,
     'border':'1px black solid',
     'width': '900px', 
-    'border':'1px black solid'
 }
 
 sidebar = html.Div(
@@ -142,7 +195,6 @@ menu_bar = html.Div(
         dbc.Row(
             [
                 html.Img(src=btn_sidebar, width=50, id='btn_Sidebar'),
-                #html.Img(src=btn_field, width=50, id='btn_field'),
                 html.P(id='path', style={'margin-top':'13px', 'margin-left':'10px', 'fontSize':17}),
             ],
             style={"margin-left": "6px"},
@@ -161,8 +213,9 @@ content2 = dbc.Col(
         columns=[{'name': column, 'id': column} for column in df.columns],
         data=df.to_dict('records'),
         virtualization=True,
-        id='data_table',
+        id='table',
     ),
+    id='content2',
     style=CONTENT2_STYLE,
 )
 
@@ -175,7 +228,7 @@ all_content = html.Div(
             ]
         )
     ],
-    style={'width':'100%', 'flex-direction': 'row'}
+    style={'width':'100%'}
 )
 
 # 網頁 layout
@@ -199,6 +252,7 @@ layout = html.Div(
         Output("sidebar", "style"),
         Output("page-content", "style"),
         Output("side_click", "data"),
+        #Output("content2", "children"),
     ],
     [Input("btn_Sidebar", "n_clicks")],
     [
@@ -209,7 +263,7 @@ def toggle_sidebar(n, nclick):
     if n:
         if nclick == "SHOW":
             sidebar_style = SIDEBAR_HIDDEN
-            content_style = CONTENT_HIDDEN
+            content_style = CONTENT_STYLE1
             cur_nclick = "HIDDEN"
         else:
             sidebar_style = SIDEBAR_STYLE
@@ -220,7 +274,7 @@ def toggle_sidebar(n, nclick):
         content_style = CONTENT_STYLE
         cur_nclick = 'SHOW'
 
-    return sidebar_style, content_style, cur_nclick
+    return sidebar_style, content_style, cur_nclick#, CONTENT2_STYLE
 
 
 all_pages = ['/Home','/Discover','/Security-Events']
@@ -237,60 +291,12 @@ all_pages = ['/Home','/Discover','/Security-Events']
     ],
 )
 def toggle_active_links(pathname):
+    print(pathname)
     if pathname == "/":
         # Treat page 1 as the homepage / index
         return [True, False, False], pathname
     return [pathname == page for page in all_pages], pathname
 
-
-# 新增 field, btn
-add_collapse_combines = []
-del_collapse_combines = []
-field_style = {'margin-top':'7px', 'margin-left':'50px', "width": 120}
-add_btn_style = {'color':'green', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
-del_btn_style = {'color':'red', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
-
-for i in range(len(all_fields)):
-    # 新增 add collapsed fields, btns
-    field = all_fields[i]
-    add_collapse_field = dbc.Collapse(
-        html.P(field, style=field_style),
-        id=f"add_collapse_fields_{i}",
-        is_open=True,
-    )
-    add_collapse_btn = dbc.Collapse(
-        html.Button('+ add', id=f'add_btn_{i}', style=add_btn_style, n_clicks=0),
-        id=f"{i}",
-        is_open=True,
-    )
-    add_collapse_combine = dbc.Row(
-        [
-            add_collapse_field, 
-            dbc.Col(style={"width": 70}),
-            add_collapse_btn,
-        ]
-    )
-    add_collapse_combines.append(add_collapse_combine)
-
-    # 新增 del collapsed fields, btns
-    del_collapse_field = dbc.Collapse(
-        html.P(field, style=field_style),
-        id=f"del_collapse_fields_{i}",
-        is_open=False,
-    )
-    del_collapse_btn = dbc.Collapse(
-        html.Button('- del', id=f'del_btn_{i}', style=del_btn_style),
-        id=f"del_{i}",
-        is_open=False,
-    )
-    del_collapse_combine = dbc.Row(
-        [
-            del_collapse_field, 
-            dbc.Col(style={"width": 70}),
-            del_collapse_btn,
-        ]
-    )
-    del_collapse_combines.append(del_collapse_combine)
 
 FIELDS_HIDDEN_STYLE = {
     "left": "-10rem",
@@ -319,6 +325,7 @@ def render_page_content(pathname, children):
                 dbc.Row(
                     [
                         dbc.Col(style={"width": 50}),
+                        dbc.Button('Enter', id='submit_fields')
                         #html.Img(src=btn_field, width=50, id='btn_field')
                     ],
                 ),
@@ -392,8 +399,13 @@ def click_btn(add_clicks, del_clicks, btn_name):
         add_next_click[field_idx] += 1
         selected_fields.append(all_fields[field_idx])
         print(selected_fields)
+
         # 顯示 table
-        
+        table = dash_table.DataTable(
+            columns=[{'name': column, 'id': column} for column in selected_fields],
+            data=df.to_dict('records'),
+            virtualization=True,
+        )
         return [False, False,True, True]
 
     # add_btn 沒被按 => 則為 del_btn 被按, 或者add_btn, del_btn都沒被按(網頁初始狀態)
@@ -413,7 +425,7 @@ for i in range(len(all_fields)):
             Output(f'{i}', 'is_open'),
             Output(f'del_collapse_fields_{i}', 'is_open'),
             Output(f'del_{i}', 'is_open'),
-            #Output('data_table', 'children')
+            #Output(f'table_{i}', 'children'),
         ],
         [
             Input(f'add_btn_{i}', 'n_clicks'),
@@ -421,3 +433,18 @@ for i in range(len(all_fields)):
             Input(f'{i}', 'id'),
         ]
     )(click_btn)
+
+@callback(
+    Output('content2', 'children'),
+    Input('submit_fields', 'n_clicks'),
+)
+def update_table(n_clicks):
+    if n_clicks:
+        # 顯示 table
+        table = dash_table.DataTable(
+            columns=[{'name': column, 'id': column} for column in selected_fields],
+            data=df.to_dict('records'),
+            virtualization=True,
+        )
+        return table
+    return dash.no_update
