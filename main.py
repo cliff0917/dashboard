@@ -1,3 +1,7 @@
+import warnings
+
+warnings.filterwarnings("ignore", category=Warning)
+
 import dash
 import dash_bootstrap_components as dbc
 from pymongo import MongoClient
@@ -11,8 +15,8 @@ from components import collapse_item, navbar, sidebar, fields, menubar, table, g
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 # 需要 sudo 密碼以存取檔案
-sudoPassword = 'uscc'
-dir_path = '.'
+sudoPassword = 'uscc' # 0
+dir_path = '.'  # /var/ossec/logs/alerts
 
 # components
 navbar = navbar.navbar
