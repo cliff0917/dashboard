@@ -33,6 +33,7 @@ def createDB(database, dir_path, sudoPassword):
         # 按照月份存取
         for month in months:
             try:
+                print(f'{year_}/{month}')
                 json_files = sorted(glob.glob(f'{year_}/{month}/*.json'))  # 找出所有日期的 .json files, 並由小到大排序
             except: 
                 continue
