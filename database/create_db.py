@@ -5,7 +5,6 @@ import pandas as pd
 from pymongo import MongoClient
 
 def createDB(database, dir_path, sudoPassword):
-    dir_path = '.'
 
     # 更改目錄存取權限
     changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 -R {dir_path}"
