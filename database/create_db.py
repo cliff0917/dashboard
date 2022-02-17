@@ -29,6 +29,7 @@ def createDB(database, dir_path, sudoPassword):
 
     num = 0
     data = []
+    error_file = ''
     for year_ in years:
         # 按照月份存取
         for month in months:
@@ -37,15 +38,21 @@ def createDB(database, dir_path, sudoPassword):
                 for json_file in json_files:
                     f = open(json_file, 'r')
                     lines = f.readlines()
-                    num += len(lines)
                     try:
                         json_lines = [json.loads(line) for line in lines]
+                        num += len(lines)
                     except: 
-                        pass
+                        error_file = json_file
                     data += json_lines
                     print(f'{json_file} 有 {len(lines)} 筆資料')
             except: 
                 continue
-                
-    database.insert_many(data) # insert data into mongoDB
+    try:
+        database.insert_many(data) # insert data into mongoDB
+    except:
+        f = open(error_file, 'r')
+        lines = f.readlines()
+        json_lines = [json.loads(line) for line in lines]
+        num += len(lines)
+        database.insert_many(json_lines)
     print(f'總共 {num} 筆')
