@@ -3,7 +3,7 @@ import plotly.express as px
 
 def get_statics(df):
     if len(df) == 0:
-        print('無符合條件的資料')
+        #print('無符合條件的資料')
         return 
     time = df['timestamp'].iloc[0]
     date = time.split('T')[0]

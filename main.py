@@ -1,18 +1,32 @@
 import dash
-from dash import dcc, html, callback
 import dash_bootstrap_components as dbc
+from pymongo import MongoClient
+from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State, ALL
 
 from pages import page1#, page2
+from database import create_db
 from components import collapse_item, navbar, sidebar, fields, menubar, table, graph, showData
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
+
+# 需要 sudo 密碼以存取檔案
+sudoPassword = 'uscc'
 
 # components
 navbar = navbar.navbar
 menu_bar = menubar.menu_bar
 show_data = showData.show_data
 url = dcc.Location(id="url")
+
+# 建立 mongoDB
+client = MongoClient()
+db = client['pythondb']
+current_db = db.list_collection_names(include_system_collections=False)
+posts = db.posts
+
+if current_db == []:
+    create_db.createDB(posts, sudoPassword)
 
 content = html.Div(
     id='content',

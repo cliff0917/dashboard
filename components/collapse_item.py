@@ -77,7 +77,8 @@ def click_btn(add_clicks, del_clicks, btn_name):
     field_idx = int(btn_name)
     if add_clicks == add_next_click[field_idx]:
         add_next_click[field_idx] += 1
-        selected_fields.append(all_fields[field_idx])
+        field_name = all_fields[field_idx]
+        selected_fields.append(field_name)
         print(selected_fields)
         return [False, False,True, True]
 
