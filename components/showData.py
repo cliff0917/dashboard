@@ -48,7 +48,7 @@ show_data = dbc.Col(
     [
         datePicker.date_picker,
         datePicker.datetime_output,
-        html.H3(f'共{len(df)}筆資料', style={'textAlign': 'center'}),
+        html.H3(f'{len(df)} hits', style={'textAlign': 'center'}),
         graph,
         html.Br(),
         table,

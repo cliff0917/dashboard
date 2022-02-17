@@ -12,6 +12,7 @@ app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 # 需要 sudo 密碼以存取檔案
 sudoPassword = 'uscc'
+dir_path = '.'
 
 # components
 navbar = navbar.navbar
@@ -26,7 +27,7 @@ current_db = db.list_collection_names(include_system_collections=False)
 posts = db.posts
 
 if current_db == []:
-    create_db.createDB(posts, sudoPassword)
+    create_db.createDB(posts, dir_path, sudoPassword)
 
 content = html.Div(
     id='content',

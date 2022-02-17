@@ -4,18 +4,18 @@ import glob
 import pandas as pd
 from pymongo import MongoClient
 
-def createDB(database, sudoPassword):
-    # 找出年份(2000~2099)的資料夾
+def createDB(database, dir_path, sudoPassword):
     dir_path = '.'
 
     # 更改目錄存取權限
-    changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 {dir_path}"
+    changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 - R {dir_path}"
     os.system(changePermission_cmd)
 
     # unzip json.gz files
     unzip_cmd = f"echo {sudoPassword} | sudo -S find {dir_path} -iname '*.json.gz' | xargs gunzip"
     os.system(unzip_cmd)
 
+    # 找出年份(2000~2099)的資料夾
     targetPattern = "20[0-9][0-9]"
     years = glob.glob(f'{dir_path}/{targetPattern}')
 
