@@ -41,7 +41,10 @@ def createDB(database, dir_path, sudoPassword):
                 f = open(json_file, 'r')
                 lines = f.readlines()
                 num += len(lines)
-                json_lines = [json.loads(line) for line in lines]
+                try:
+                    json_lines = [json.loads(line) for line in lines]
+                except: 
+                    pass
                 data += json_lines
                 print(f'{json_file} 有 {len(lines)} 筆資料')
 
