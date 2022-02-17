@@ -2,9 +2,11 @@ import pandas as pd
 import plotly.express as px
 
 def get_statics(df):
+    
+    # 無符合條件的資料
     if len(df) == 0:
-        #print('無符合條件的資料')
         return 
+
     time = df['timestamp'].iloc[0]
     date = time.split('T')[0]
     hours = [str(i).zfill(2) for i in range(0, 24)]
