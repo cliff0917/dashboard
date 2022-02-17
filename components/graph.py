@@ -18,5 +18,5 @@ graph = dcc.Graph(
         'watermark': True,
         'modeBarButtonsToRemove': ['pan2d','select2d'],
     },
-    style={'border':'1px black solid', 'zIndex':5, "frameMargins": 55,},
+    style={'border':'1px black solid', 'zIndex':1, "frameMargins": 55,},
 )

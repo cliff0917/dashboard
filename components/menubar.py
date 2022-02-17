@@ -1,15 +1,18 @@
 from dash import html
 import dash_bootstrap_components as dbc
 
-img_path = './assets/img'
-btn_sidebar = f'{img_path}/btn_sidebar.png'
+from components import datePicker
+
+pages = ['/Home', '/Discover', '/Security-Events']
+LINK_STYLE = {'color': 'blue', 'text-decoration': 'none', 'margin-right':'2rem', 'fontSize':30}
 
 menu_bar = html.Div(
     [
         dbc.Row(
             [
-                html.Img(src=btn_sidebar, width=50, id='btn_Sidebar'),
-                html.P(id='path', style={'margin-top':'13px', 'margin-left':'10px', 'fontSize':17}),
+                html.A('Home', href='/Home', style=LINK_STYLE),
+                html.A('Discover', href='/Discover', style=LINK_STYLE),
+                html.A('Security-Events', href='/Security-Events', style=LINK_STYLE),
             ],
             style={"margin-left": "6px"},
         ),

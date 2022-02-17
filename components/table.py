@@ -24,7 +24,7 @@ table = dash_table.DataTable(
         'fontWeight': 'bold',
         'textAlign': 'left',
         'border':'1px black solid',
-        'minWidth': '100%'
+        'minWidth': '100%',
     },
     tooltip_data=[
         {

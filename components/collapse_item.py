@@ -1,11 +1,17 @@
 import pandas as pd
+from pymongo import MongoClient
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback, dash_table
 from dash.dependencies import Input, Output, State, ALL
 
 from pages import page1
 
-df = pd.read_csv('test.csv')
+client = MongoClient()
+db = client['pythondb']
+posts = db.posts
+
+data = posts.find({}, {'_id':0})
+df = pd.json_normalize(data)
 all_fields = list(df.columns)
 
 # 新增 fields_btn
