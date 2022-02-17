@@ -9,6 +9,7 @@ from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State, ALL
 
 from pages import page1#, page2
+
 from database import create_db
 from components import collapse_item, navbar, sidebar, fields, menubar, table, graph, showData
 
@@ -24,30 +25,34 @@ menu_bar = menubar.menu_bar
 show_data = showData.show_data
 url = dcc.Location(id="url")
 
-# 建立 mongoDB
-client = MongoClient()
-db = client['pythondb']
-current_db = db.list_collection_names(include_system_collections=False)
-posts = db.posts
-
-if current_db == []:
-    create_db.createDB(posts, dir_path, sudoPassword)
-
 content = html.Div(
     id='content',
 )
 
-layout = html.Div(
-    [
-        dcc.Store(id='side_click'),
-        url,
-        navbar,
-        menu_bar,
-        content,
-    ],
-)
+def serve_layout():
 
-app.layout = layout
+    # 建立 mongoDB
+    client = MongoClient()
+    client.drop_database('pythondb')
+    db = client['pythondb']
+    current_db = db.list_collection_names(include_system_collections=False)
+    posts = db.posts
+
+    if current_db == []:
+        create_db.createDB(posts, dir_path, sudoPassword)
+
+    layout = html.Div(
+        [
+            dcc.Store(id='side_click'),
+            url,
+            navbar,
+            menu_bar,
+            content,
+        ],
+    )
+    return layout
+
+app.layout = serve_layout
 
 @callback(
     Output('content', 'children'),

@@ -44,12 +44,13 @@ def createDB(database, dir_path, sudoPassword):
                     except: 
                         error_file = json_file
                     data += json_lines
-                    print(f'{json_file} 有 {len(lines)} 筆資料')
+                    # print(f'{json_file} 有 {len(lines)} 筆資料')
             except: 
                 continue
     try:
         database.insert_many(data) # insert data into mongoDB
     except:
+        print(f'重新 insert {error_file}')
         f = open(error_file, 'r')
         lines = f.readlines()
         json_lines = [json.loads(line) for line in lines]

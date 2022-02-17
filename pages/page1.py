@@ -21,35 +21,41 @@ navbar = navbar.navbar
 menu_bar = menubar.menu_bar
 show_data = showData.show_data
 
-field = html.Div(
-    id="page-content",
-)
+# field = html.Div(
+#     id="page-content",
+# )
 
-content = html.Div(
-    [
-        dbc.Row(
-            [
-                field,
-                show_data,
-            ],
-        )
-    ],
-    id='content',
-)
+# content = html.Div(
+#     [
+#         dbc.Row(
+#             [
+#                 field,
+#                 show_data,
+#             ],
+#         )
+#     ],
+#     id='content',
+# )
+
 fields_bar = html.Div(
     fields.fields_bar,
 )
 
-layout = html.Div(
-    [
-        dbc.Row(
-            [
-                fields_bar,
-                show_data,
-            ],
-        )
-    ],
-)
+def serve_layout():
+    layout = html.Div(
+        [
+            dbc.Row(
+                [
+                    fields_bar,
+                    show_data,
+                ],
+            )
+        ],
+    )
+    return layout
+
+layout = serve_layout()
+
 
 # 當 btn_sidebar 觸發時, sidebar 和 content 的位置會發生改變
 # @callback(
