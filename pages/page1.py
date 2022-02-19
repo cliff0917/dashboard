@@ -68,6 +68,11 @@ def serve_layout():
                     ), 
                 ],
             ),
+            dcc.ConfirmDialog(
+                id='confirm',
+                message='請先選擇fields(不選的話預設為全部的fields), 再選日期',
+                displayed=True,
+            ),
         ],
     )
     return layout
