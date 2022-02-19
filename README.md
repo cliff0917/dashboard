@@ -1,7 +1,7 @@
 # dashboard
 ## 環境安裝
 ```
-sudo apt-get install mongodb
+sudo apt-get install -y mongodb
 conda create -y -n dashboard python=3.7
 conda activate dashboard
 pip install -r requirements.txt

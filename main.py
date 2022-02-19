@@ -10,14 +10,11 @@ from dash.dependencies import Input, Output, State, ALL
 
 from pages import page1#, page2
 
+import globals
 from database import create_db
 from components import collapse_item, navbar, sidebar, fields, menubar, table, graph, showData
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
-
-# 需要 sudo 密碼以存取檔案
-sudoPassword = 'uscc' # 0
-dir_path = '.'  # /var/ossec/logs/alerts
 
 # components
 navbar = navbar.navbar
@@ -30,16 +27,8 @@ content = html.Div(
 )
 
 def serve_layout():
-
-    # 建立 mongoDB
-    client = MongoClient()
-    client.drop_database('pythondb')
-    db = client['pythondb']
-    current_db = db.list_collection_names(include_system_collections=False)
-    posts = db.posts
-
-    if current_db == []:
-        create_db.createDB(posts, dir_path, sudoPassword)
+    # 得到最新狀態的 db
+    globals.initialize()
 
     layout = html.Div(
         [
@@ -52,8 +41,10 @@ def serve_layout():
     )
     return layout
 
+# live update, 請注意這裡是要用 serve_layout 而非 serve_layout()
 app.layout = serve_layout
 
+# 透過 url 來決定顯示哪個 page
 @callback(
     Output('content', 'children'),
     Input('url', 'pathname')
@@ -83,9 +74,3 @@ def display_page(pathname):
 
 if __name__ == '__main__':
     app.run_server(debug=True, dev_tools_props_check=False)
-    """ pid = os.fork()
-    if pid != 0:
-        app.run_server()
-    else:
-        url = "http://127.0.0.1:8050/"
-        webbrowser.open(url) """

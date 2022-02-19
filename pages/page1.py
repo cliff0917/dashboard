@@ -3,7 +3,7 @@ from dash import dcc, html, callback
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State, ALL
 
-from components import collapse_item, navbar, sidebar, fields, menubar, table, graph, showData
+from components import collapse_item, navbar, sidebar, fields, menubar, table, graph, showData, datePicker
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
@@ -20,7 +20,7 @@ all_pages = ['/Home','/Discover','/Security-Events']
 navbar = navbar.navbar
 menu_bar = menubar.menu_bar
 show_data = showData.show_data
-
+date = datePicker.date
 # field = html.Div(
 #     id="page-content",
 # )
@@ -41,15 +41,33 @@ fields_bar = html.Div(
     fields.fields_bar,
 )
 
+DISPLAY_STYLE = {
+    "transition": "margin-left .5s",
+    "margin-top": 35,
+    "padding": "1rem 1rem",
+    "background-color": "red",
+    'fontSize': 10,
+    'zIndex':1,
+    'border':'1px black solid',
+    'width': '900px',
+    'zIndex':1,
+}
+
 def serve_layout():
     layout = html.Div(
         [
             dbc.Row(
                 [
                     fields_bar,
-                    show_data,
+                    dbc.Col(
+                        [
+                            date,
+                            show_data,
+                        ],
+                        style=DISPLAY_STYLE,
+                    ), 
                 ],
-            )
+            ),
         ],
     )
     return layout

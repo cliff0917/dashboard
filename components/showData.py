@@ -1,9 +1,11 @@
 import dash
 import pandas as pd
 import dash_bootstrap_components as dbc
+from pymongo import MongoClient
 from dash import dcc, html, callback, dash_table
 from dash.dependencies import Input, Output, State, ALL
 
+import globals
 from database import search
 from statics import get_statics
 from components import collapse_item, fields, table, graph, datePicker
@@ -16,45 +18,15 @@ fields = fields.fields_bar
 table = table.table
 graph = graph.graph
 
-DISPLAY_STYLE = {
-    "transition": "margin-left .5s",
-    "margin-left": 2,
-    "margin-top": 55,
-    "margin-right": "1rem",
-    "padding": "1rem 1rem",
-    "background-color": "red",
-    'fontSize': 10,
-    'zIndex':1,
-    'border':'1px black solid',
-    'width': '900px', 
-    'zIndex':0
-}
-
-NEW_DISPLAY_STYLE = {
-    "transition": "margin-left .5s",
-    #"margin-left": 2,
-    "margin-top": 35,
-    #"margin-right": "1rem",
-    "padding": "1rem 1rem",
-    "background-color": "red",
-    'fontSize': 10,
-    'zIndex':1,
-    'border':'1px black solid',
-    'width': '900px',
-    'zIndex':0
-}
-
 show_data = dbc.Col(
     [
-        datePicker.date_picker,
-        datePicker.datetime_output,
         html.H3(f'{len(df)} hits', style={'textAlign': 'center'}),
         graph,
         html.Br(),
         table,
     ],
     id='show_data',
-    style=NEW_DISPLAY_STYLE,
+    #style=NEW_DISPLAY_STYLE,
 )
 
 @callback(
@@ -63,11 +35,16 @@ show_data = dbc.Col(
 )
 def update_table(n_clicks):
     global df, selected_fields, fields, table, graph
+
+    posts = globals.posts
+    data = posts.find({}, {'_id':0})
+    df = pd.json_normalize(data)
+
     if n_clicks:
         # 如果沒有 field 被選取, 則顯示所有 fields
         if selected_fields == []:
             dataNum = html.H3(f'{len(df)} hits', style={'textAlign': 'center'})
-            return [datePicker.date_picker, datePicker.datetime_output, dataNum, graph, html.Br(), table]
+            return [graph, html.Br(), table]
 
         # 若有 field 被選取, 顯示 new table
         database = collapse_item.posts
@@ -76,7 +53,7 @@ def update_table(n_clicks):
         # 若無符合的資料
         if len(selected_df) == 0:
             message = html.H3('無符合條件的資料', style={'textAlign': 'center'})
-            return [datePicker.date_picker, datePicker.datetime_output, message]
+            return [message]
 
         # 若有符合的資料
         dataNum = html.H3(f'共{len(selected_df)}筆資料', style={'textAlign': 'center'})
@@ -120,12 +97,12 @@ def update_table(n_clicks):
                 'staticPlot': False,     # True, False
                 'scrollZoom': True,      # True, False
                 'doubleClick': 'reset',  # 'reset', 'autosize' or 'reset+autosize', False
-                'showTips': False,       # True, False
+                'showTips': True,       # True, False
                 'displayModeBar': True,  # True, False, 'hover'
                 'watermark': True,
                 'modeBarButtonsToRemove': ['pan2d','select2d'],
             },
             style={'border':'1px black solid', 'zIndex':1, "frameMargins": 55},
         )
-        return [datePicker.date_picker, datePicker.datetime_output, dataNum, new_graph, html.Br(), new_table]
+        return [dataNum, new_graph, html.Br(), new_table]
     return dash.no_update

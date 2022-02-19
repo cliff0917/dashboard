@@ -13,7 +13,7 @@ graph = dcc.Graph(
         'staticPlot': False,     # True, False
         'scrollZoom': True,      # True, False
         'doubleClick': 'reset',  # 'reset', 'autosize' or 'reset+autosize', False
-        'showTips': False,       # True, False
+        'showTips': True,       # True, False
         'displayModeBar': True,  # True, False, 'hover'
         'watermark': True,
         'modeBarButtonsToRemove': ['pan2d','select2d'],

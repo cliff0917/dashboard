@@ -10,19 +10,20 @@ def createDB(database, dir_path, sudoPassword):
     changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 -R {dir_path}"
     os.system(changePermission_cmd)
 
-    # unzip all .json.gz files
-    unzip_cmd = f"echo {sudoPassword} | sudo -S find {dir_path} -iname '*.json.gz' | xargs gunzip"
+    # unzip all .json.gz files => 用 "find {dir_path} -name '*.json.gz' -exec gunzip {} +" 指令
+    # f sting 中用兩個{}, 來顯示{}
+    unzip_cmd = f"echo {sudoPassword} | sudo -S find {dir_path} -name '*.json.gz' -exec gunzip {{}} +"
     os.system(unzip_cmd)
     
-
     # 找出年份(2000~2099)的資料夾, 並由小到大排序
     targetPattern = "20[0-9][0-9]"
     years = sorted(glob.glob(f'{dir_path}/{targetPattern}'))
-    # print(years)
+    
     months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
     ]
+
     month_dict = {}
     for i in range(len(months)):
         month_dict[months[i]] = i + 1

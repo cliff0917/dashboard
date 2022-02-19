@@ -1,11 +1,13 @@
 import pandas as pd
 import plotly.express as px
+from pymongo import MongoClient
 
 def get_statics(df):
-    
+
     # 無符合條件的資料
     if len(df) == 0:
         return 
+    
 
     time = df['timestamp'].iloc[0]
     date = time.split('T')[0]
@@ -24,5 +26,5 @@ def get_statics(df):
         result = df[mask1 & mask2]
         cnt.append(len(result))
 
-    fig = px.bar(cnt, x=intervals[:-1], y=cnt)
+    fig = px.bar(x=intervals[:-1], y=cnt, labels={'x': 'Time', 'y':'Count'})
     return fig
