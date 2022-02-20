@@ -77,8 +77,8 @@ fields_bar = dbc.Col(
         dbc.Row(
             [
                 dbc.Col(style={"width": 50}),
-                dbc.Button('Enter', id='submit_fields')
-                #html.Img(src=btn_field, width=50, id='btn_field')
+                # dbc.Button('Enter', id='submit_fields')
+                # html.Img(src=btn_field, width=50, id='btn_field')
             ],
         ),
         dbc.Container(

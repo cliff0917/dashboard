@@ -1,10 +1,9 @@
 from dash import dcc
 
-from statics import get_statics
-from components import collapse_item
+from statics import get_one_day
 
-df = collapse_item.df
-bar_chart = get_statics(df)
+bar_chart, _, msg, df = get_one_day()
+dataCnt = msg.split(' ')[0]
 
 graph = dcc.Graph(
     figure=bar_chart,

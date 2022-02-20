@@ -4,8 +4,6 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html, callback, dash_table
 from dash.dependencies import Input, Output, State, ALL
 
-from pages import page1
-
 client = MongoClient()
 db = client['pythondb']
 posts = db.posts

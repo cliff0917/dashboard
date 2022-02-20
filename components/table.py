@@ -1,14 +1,14 @@
 from dash import dash_table
 
-from components import collapse_item
+from components import graph
 
-df = collapse_item.df
+df = graph.df
 
 table = dash_table.DataTable(
     columns=[{'name': column, 'id': column} for column in df.columns],
     data=df.to_dict('records'),
     virtualization=True,
-    style_cell={'textAlign': 'left', 'maxWidth': 135}, #'minHeight': '100%'},
+    style_cell={'textAlign': 'left', 'maxWidth': 135},
     sort_action='custom',
     sort_mode='multi',
     #filter_action="native",
@@ -32,6 +32,5 @@ table = dash_table.DataTable(
             for column, value in row.items()
         } for row in df.to_dict('records')
     ],
-    #fixed_rows={'headers': True},
     id='table',
 )
