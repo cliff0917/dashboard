@@ -6,8 +6,8 @@ import dash_bootstrap_components as dbc
 from dash import html, callback
 from dash.dependencies import Input, Output, State, ALL
 
-import globals
-from statics import interval_cnt
+import globals, statics
+from statics import interval_cnt, get_freq
 from components import table, graph
 
 table = table.table
@@ -24,6 +24,7 @@ date_picker = dbc.Row(
 
 datetime_output = html.H6(id='datetime-output', style={'margin-top': '20px', 'margin-left': '7px',})
 dataNum = html.H3(f'{dataCnt} hits', style={'textAlign': 'center'}, id='dateNum')
+se_datetime_output = html.H6(id='se_datetime-output', style={'margin-top': '20px', 'margin-left': '7px'})
 
 date = dbc.Col(
     [
@@ -33,6 +34,22 @@ date = dbc.Col(
     ],
     id='date',
 )
+
+se_date_picker = dbc.Row(
+    [
+        dash_datetimepicker.DashDatetimepicker(id="datetime-picker2"),
+        html.Button('Update', id='submit_date2', style={'margin-left':'1rem', 'font-size': '15px', 'height': 37}, n_clicks=0),
+    ],
+    style={'margin-left':'5px'}
+)
+se_date = dbc.Col(
+    [
+        se_date_picker,
+        se_datetime_output,
+    ],
+    id='date2',
+)
+
 
 # 修正8小時時差並轉成string
 def localTime(time):
@@ -68,14 +85,20 @@ def update(n_clicks, startDate, endDate):
         endDate = localTime(endDate)
 
         # 計算每個 interval 中的 data 個數
-        freqs = '30min'
+        freqs = get_freq(startDate, endDate)
         intervals, cnt, df, dataNum = interval_cnt(startDate, endDate, freqs)
         columns = [{'name': column, 'id': column} for column in df.columns]
 
         if dataNum == 0:
             return [{}, f'從 {startDate} 到 {endDate}', '0 hits', df.to_dict('record'), columns]
 
-        fig = px.bar(x=intervals[:-1], y=cnt, labels={'x': 'Time', 'y':'Count'})
+        interval_title = statics.interval_title
+        data = {'time':intervals[:-1]}
+        data['Count'] = cnt
+        df2 = pd.DataFrame(data)
+        fig = px.bar(df2, x='time', y='Count', labels={'time': f'<b>timestamp per {interval_title[freqs]}</b>', 'Count':'<b>Count</b>'}, hover_data={"time":False})
+        # fig = px.bar(x=intervals[:-1], y=cnt, labels={'x': f'<b>timestamp per {interval_title[freqs]}</b>', 'y':'<b>Count</b>'})
+        fig.update_layout(hovermode="x unified")
         return [fig, f'從 {startDate} 到 {endDate}', f'{dataNum} hits', df.to_dict('record'), columns]
 
     return [dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update]

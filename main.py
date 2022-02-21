@@ -8,7 +8,7 @@ from pymongo import MongoClient
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State, ALL
 
-from pages import page1#, page2
+from pages import page1, page2
 
 import globals
 from database import create_db
@@ -59,9 +59,7 @@ def display_page(pathname):
         return page1.layout
 
     elif pathname == '/Security-Events':
-        return html.Div(
-            html.P('404', style=fields.OTHER_FIELD_STYLE),
-        )
+        return page2.layout
     
     # 若非以上路徑, 則 return 404 message
     return dbc.Jumbotron(
