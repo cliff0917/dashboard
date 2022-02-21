@@ -1,13 +1,9 @@
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
-# from dash import dcc, html, callback
+from dash import dcc, html, callback
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output, State#, ALL
+from dash.dependencies import Input, Output, State, ALL
 
 from components import collapse_item, navbar, sidebar, fields, menubar, table, graph, showData, datePicker
-
-app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
 url = dcc.Location(id="url")
 all_pages = ['/Home','/Discover','/Security-Events']
@@ -23,6 +19,7 @@ navbar = navbar.navbar
 menu_bar = menubar.menu_bar
 show_data = showData.show_data
 date = datePicker.date
+
 # field = html.Div(
 #     id="page-content",
 # )
@@ -80,7 +77,6 @@ def serve_layout():
     return layout
 
 layout = serve_layout()
-
 
 # 當 btn_sidebar 觸發時, sidebar 和 content 的位置會發生改變
 # @callback(

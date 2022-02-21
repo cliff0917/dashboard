@@ -8,7 +8,7 @@ from pymongo import MongoClient
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State, ALL
 
-from pages import page1, page2
+from pages import home, discover, security_events, nonExist
 
 import globals
 from database import create_db
@@ -21,10 +21,7 @@ navbar = navbar.navbar
 menu_bar = menubar.menu_bar
 show_data = showData.show_data
 url = dcc.Location(id="url")
-
-content = html.Div(
-    id='content',
-)
+content = html.Div(id='content')
 
 def serve_layout():
     # 得到最新狀態的 db
@@ -51,24 +48,16 @@ app.layout = serve_layout
 )
 def display_page(pathname):
     if pathname in ['/', '/Home']:
-        return html.Div(
-            html.P('歡迎來到首頁!', style=fields.OTHER_FIELD_STYLE),
-        )
+        return home.layout
 
     elif pathname == '/Discover':
-        return page1.layout
+        return discover.layout
 
     elif pathname == '/Security-Events':
-        return page2.layout
+        return security_events.layout
     
     # 若非以上路徑, 則 return 404 message
-    return dbc.Jumbotron(
-        [
-            html.H1("404: Not found", className="text-danger"),
-            html.Hr(),
-            html.P(f"此網頁不存在..."),
-        ]
-    )
+    return nonExist.layout
 
 if __name__ == '__main__':
     app.run_server(debug=True, dev_tools_props_check=False)

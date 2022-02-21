@@ -3,7 +3,6 @@ from dash import dash_table
 from components import graph
 
 table = dash_table.DataTable(
-
     virtualization=True,
     style_cell={'textAlign': 'left', 'maxWidth': 135},
     sort_action='custom',

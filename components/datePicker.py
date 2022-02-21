@@ -1,14 +1,13 @@
 import dash
 import pandas as pd
 import dash_datetimepicker
-import plotly.express as px
 import dash_bootstrap_components as dbc
 from dash import html, callback
 from dash.dependencies import Input, Output, State, ALL
 
 import globals, security_event_graph
-from statics import interval_cnt, get_freq
-from components import table, graph
+from statics import update_bar, get_freq
+from components import table, graph, collapse_item
 
 table = table.table
 graph = graph.graph
@@ -22,14 +21,14 @@ date_picker = dbc.Row(
 )
 
 datetime_output = html.H6(id='datetime-output', style={'margin-top': '20px', 'margin-left': '7px',})
-dataNum = html.H3('', style={'textAlign': 'center'}, id='dateNum')
+hitNum = html.H3(style={'textAlign': 'center'}, id='dataNum')
 se_datetime_output = html.H6(id='se-datetime-output', style={'margin-left': '7px'})
 
 date = dbc.Col(
     [
         date_picker,
         datetime_output,
-        dataNum,
+        hitNum,
     ],
     id='date',
 )
@@ -61,7 +60,7 @@ def localTime(time):
     [
         Output('graph', 'figure'),
         Output('datetime-output', 'children'),
-        Output('dateNum', 'children'),
+        Output('dataNum', 'children'),
         Output('table', 'data'),
         Output('table', 'columns'),
         Output("table", "tooltip_data"),
@@ -74,7 +73,6 @@ def localTime(time):
     ]
 )
 def update(n_clicks, startDate, endDate):
-
     if n_clicks == globals.update_next_clicks:
         globals.update_next_clicks += 1
         if startDate >= endDate:
@@ -86,7 +84,7 @@ def update(n_clicks, startDate, endDate):
 
         # 計算每個 interval 中的 data 個數
         freqs = get_freq(startDate, endDate)
-        intervals, cnt, df, dataNum = interval_cnt(startDate, endDate, freqs)
+        bar_fig, df = update_bar(startDate, endDate, freqs, collapse_item.selected_fields)
         columns = [{'name': column, 'id': column} for column in df.columns]
 
         tooltip_data=[
@@ -96,20 +94,9 @@ def update(n_clicks, startDate, endDate):
             } for row in df.to_dict('records')
         ]
         tooltip_header = {i: i for i in df.columns}
+        return [bar_fig, f'從 {startDate} 到 {endDate}', f'{len(df)} hits', df.to_dict('record'), columns, tooltip_data, tooltip_header]
 
-        if dataNum == 0:
-            return [{}, f'從 {startDate} 到 {endDate}', '0 hits', df.to_dict('record'), columns, tooltip_data, tooltip_header]
-
-        interval_title = security_event_graph.interval_title
-        data = {'time':intervals[:-1]}
-        data['Count'] = cnt
-        df2 = pd.DataFrame(data)
-        
-        fig = px.bar(df2, x='time', y='Count', hover_data={"time":False},
-                    labels={'time': f'<b>timestamp per {interval_title[freqs]}</b>', 'Count':'<b>Count</b>'})
-        fig.update_layout(hovermode="x unified")
-        return [fig, f'從 {startDate} 到 {endDate}', f'{dataNum} hits', df.to_dict('record'), columns, tooltip_data, tooltip_header]
-
+    # 已經有按過 update, 但不等於 next_click, 代表 user 正在選日期 => page info 皆不變
     elif n_clicks:
         return [dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update]
 

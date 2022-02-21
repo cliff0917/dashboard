@@ -20,7 +20,6 @@ CONFIG={
 }
 
 BAR_STYLE={'border':'1px black solid', 'zIndex':1}
-STYLE2={'border':'1px black solid', 'zIndex':1, 'width':800, 'height':400}
 
 AREA_STYLE = {
     "transition": "margin-left .5s",
@@ -54,14 +53,26 @@ graph = dcc.Graph(
     config=CONFIG, style=BAR_STYLE,
 )
 
-area_graph = dcc.Graph(
+area_chart = dcc.Graph(
     figure={},
     id='area_chart', clickData=None, hoverData=None,
     config=CONFIG, style=AREA_STYLE,
 )
 
-pie_graph = dcc.Graph(
+pie_chart = dcc.Graph(
     figure={},
     id='pie_chart', clickData=None, hoverData=None,
     config=CONFIG, style=PIE_STYLE,
+)
+
+donut_chart = dcc.Graph(
+    figure={},
+    id='donut_chart', clickData=None, hoverData=None,
+    config=CONFIG, style=PIE_STYLE,
+)
+
+se_bar_chart = dcc.Graph(
+    figure={},
+    id='se_bar_chart', clickData=None, hoverData=None,
+    config=CONFIG, style=AREA_STYLE,
 )

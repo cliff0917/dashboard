@@ -5,7 +5,7 @@ from datetime import datetime
 from pymongo import MongoClient
 
 from database import connect
-from statics import get_time, timestamp_format
+from statics import timestamp_format
 
 global interval_title
 interval_title = {'30min': '30 minutes', '1H': 'hour', '3H': '3 hours', '1D': 'day'}
@@ -29,10 +29,14 @@ def update_area(startDate, endDate, col_name, freqs):
     
     for i in range(1, len(intervals[:-1])):
         for value in values:
-            result = posts.count_documents({'$and':[{'timestamp':{"$gte":intervals[i-1]}},{'timestamp':{"$lt":intervals[i]}}, {col_name:value}]})
+            result = posts.count_documents({'$and':[{'timestamp':{"$gte":intervals[i-1]}}, 
+                                                    {'timestamp':{"$lt":intervals[i]}}, 
+                                                    {col_name:value}]})
             cnt[dic[value]].append(result)
     for value in values:
-        result = posts.count_documents({'$and':[{'timestamp':{"$gt":intervals[-2]}},{'timestamp':{"$lte":intervals[-1]}}, {col_name:value}]})
+        result = posts.count_documents({'$and':[{'timestamp':{"$gt":intervals[-2]}}, 
+                                                {'timestamp':{"$lte":intervals[-1]}}, 
+                                                {col_name:value}]})
         cnt[dic[value]].append(result)
 
     data = {'time':intervals[:-1]}
@@ -47,26 +51,42 @@ def update_area(startDate, endDate, col_name, freqs):
     fig.update_layout(hovermode="x unified")
     return fig
 
-def update_pie(startDate, endDate, col_name):
+def calculate_cnt(startDate, endDate, col_name):
     # connect to database
     posts = connect.connect_to_db()
 
     # get the set of col_values
-    values = posts.distinct(col_name)
+    set_values = posts.distinct(col_name)
 
     cnt = []
-    for value in values:
+    for value in set_values:
         result = posts.count_documents({'$and':[{col_name:{"$in": [value]}}, 
                                                 {'timestamp':{"$gte":startDate}}, 
                                                 {'timestamp':{"$lte":endDate}}]})
         cnt.append(result)
-    
+    return cnt, set_values
+
+def update_pie(startDate, endDate, col_name):
+    cnt, set_values = calculate_cnt(startDate, endDate, col_name)
     fig = go.Figure(go.Pie(
         name = col_name,
         values = cnt,
-        labels = values,
-        text = values,
+        labels = set_values,
+        text = set_values,
         hovertemplate = "%{label} <br>出現次數:%{value} <br>佔比: %{percent}",
     ))
     fig.update_layout(title_text="<b>Alert</b>")
+    return fig
+
+def update_donut(startDate, endDate, col_name):
+    cnt, set_values = calculate_cnt(startDate, endDate, col_name)
+    fig = go.Figure(go.Pie(
+        name = col_name,
+        values = cnt,
+        labels = set_values,
+        text = set_values,
+        hovertemplate = "%{label} <br>出現次數:%{value} <br>佔比: %{percent}",
+        hole=0.8,
+    ))
+    fig.update_layout(title_text="<b>Top 5 agents</b>")
     return fig
