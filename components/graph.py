@@ -17,7 +17,21 @@ CONFIG={
     'modeBarButtonsToRemove': ['pan2d','select2d'],
 }
 
-STYLE={'border':'1px black solid', 'zIndex':1, "frameMargins": 55}
+STYLE={'border':'1px black solid', 'zIndex':1}
+STYLE2={'border':'1px black solid', 'zIndex':1, 'width':800, 'height':400}
+
+DISPLAY_STYLE = {
+    "transition": "margin-left .5s",
+    "margin-left": 23,
+    "margin-top": 35,
+    "padding": "1rem 1rem",
+    "background-color": "#f8f9fa",
+    'fontSize': 10,
+    'zIndex':1,
+    'border':'1px black solid',
+    'width': '40%',
+    'zIndex':1,
+}
 
 graph = dcc.Graph(
     figure=bar_chart,
@@ -28,5 +42,5 @@ graph = dcc.Graph(
 area_graph = dcc.Graph(
     figure=area_chart,
     id='area_chart', clickData=None, hoverData=None,
-    config=CONFIG, style=STYLE,
+    config=CONFIG, style=DISPLAY_STYLE,
 )

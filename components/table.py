@@ -26,10 +26,11 @@ table = dash_table.DataTable(
         'border':'1px black solid',
         'minWidth': '100%',
     },
+    tooltip_header={i: i for i in df.columns},
     tooltip_data=[
         {
-            column: {'value': str(value), 'type': 'markdown'}
-            for column, value in row.items()
+            {column: {'value': f'{column}: {value}', 'type': 'markdown'}
+            for column, value in row.items()}
         } for row in df.to_dict('records')
     ],
     id='table',

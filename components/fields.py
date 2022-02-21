@@ -43,7 +43,7 @@ NEW_FIELD_STYLE = {
     "margin-left": "15px",
     "margin-right": "15px",
     "padding": "2rem 1rem",
-    "background-color": "yellow",
+    "background-color": "#f8f9fa",
     'fontSize': 10,
     'width':284,
     #'width': 300,

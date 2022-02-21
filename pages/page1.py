@@ -45,7 +45,7 @@ DISPLAY_STYLE = {
     "transition": "margin-left .5s",
     "margin-top": 35,
     "padding": "1rem 1rem",
-    "background-color": "red",
+    "background-color": "#f8f9fa",
     'fontSize': 10,
     'zIndex':1,
     'border':'1px black solid',

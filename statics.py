@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 from components import collapse_item
 
-interval_title = {'30min': '30 minutes', '1H': 'hour', '3H': '3 hours', '1D': '1 day'}
+interval_title = {'30min': '30 minutes', '1H': 'hour', '3H': '3 hours', '1D': 'day'}
 
 # 將 interval 轉成 timestamp 格式
 def timestamp_format(intervals, endDate):
@@ -105,14 +105,7 @@ def security_event_graph(startDate, endDate, col_name, freqs):
     posts = db.posts
 
     # get the set of col_values
-    result = posts.find(drop_null, display_cols)
-    result = pd.json_normalize(result)
-    result = result.squeeze()
-    values = result.unique()
-    try:
-        values = [int(value) for value in values]
-    except:
-        pass
+    values = posts.distinct('rule.level')
 
     intervals = list(pd.date_range(startDate, endDate, freq=freqs))
     intervals = timestamp_format(intervals, endDate) # 轉成 timestamp 格式
