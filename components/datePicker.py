@@ -6,12 +6,11 @@ import dash_bootstrap_components as dbc
 from dash import html, callback
 from dash.dependencies import Input, Output, State, ALL
 
-import globals, statics
+import globals, security_event_graph
 from statics import interval_cnt, get_freq
 from components import table, graph
 
 table = table.table
-dataCnt = graph.dataCnt
 graph = graph.graph
 
 date_picker = dbc.Row(
@@ -23,7 +22,7 @@ date_picker = dbc.Row(
 )
 
 datetime_output = html.H6(id='datetime-output', style={'margin-top': '20px', 'margin-left': '7px',})
-dataNum = html.H3(f'{dataCnt} hits', style={'textAlign': 'center'}, id='dateNum')
+dataNum = html.H3('', style={'textAlign': 'center'}, id='dateNum')
 se_datetime_output = html.H6(id='se-datetime-output', style={'margin-left': '7px'})
 
 date = dbc.Col(
@@ -50,7 +49,6 @@ se_date = dbc.Col(
     id='date2',
 )
 
-
 # 修正8小時時差並轉成string
 def localTime(time):
     dateFormat = '%Y-%m-%dT%H:%M:%S.%f'
@@ -76,11 +74,11 @@ def localTime(time):
     ]
 )
 def update(n_clicks, startDate, endDate):
-   
+
     if n_clicks == globals.update_next_clicks:
         globals.update_next_clicks += 1
         if startDate >= endDate:
-            return [{}, '起始時間必須小於結束時間', '', pd.DataFrame().to_dict('record'), [], [], {}]
+            return [{}, '起始時間必須小於結束時間', '', pd.DataFrame().to_dict('record'), [], dash.no_update, dash.no_update]
 
         # 修正 datetime 時差, 並 convert datetime to string
         startDate = localTime(startDate)
@@ -102,7 +100,7 @@ def update(n_clicks, startDate, endDate):
         if dataNum == 0:
             return [{}, f'從 {startDate} 到 {endDate}', '0 hits', df.to_dict('record'), columns, tooltip_data, tooltip_header]
 
-        interval_title = statics.interval_title
+        interval_title = security_event_graph.interval_title
         data = {'time':intervals[:-1]}
         data['Count'] = cnt
         df2 = pd.DataFrame(data)
@@ -112,4 +110,7 @@ def update(n_clicks, startDate, endDate):
         fig.update_layout(hovermode="x unified")
         return [fig, f'從 {startDate} 到 {endDate}', f'{dataNum} hits', df.to_dict('record'), columns, tooltip_data, tooltip_header]
 
-    return [dash.no_update, f'從 {startDate} 到 {endDate}', dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update]
+    elif n_clicks:
+        return [dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update]
+
+    return [{}, '請選取時間', '0 hits', pd.DataFrame().to_dict('record'), [], dash.no_update, dash.no_update]

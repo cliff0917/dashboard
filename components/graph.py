@@ -1,11 +1,13 @@
 from dash import dcc
 
-from statics import get_one_day, get_area
+# from statics import get_init_bar
+# from security_event_graph import get_init_area, get_init_pie
 
-bar_chart, _, msg, df = get_one_day()
-dataCnt = msg.split(' ')[0]
+# bar_chart, _, msg, df = get_init_bar()
+# dataCnt = msg.split(' ')[0]
 
-area_chart = get_area('rule.level')
+# area_chart = get_init_area('rule.level')
+# pie_chart = get_init_pie('rule.mitre.technique')
 
 CONFIG={
     'staticPlot': False,     # True, False
@@ -17,10 +19,10 @@ CONFIG={
     'modeBarButtonsToRemove': ['pan2d','select2d'],
 }
 
-STYLE={'border':'1px black solid', 'zIndex':1}
+BAR_STYLE={'border':'1px black solid', 'zIndex':1}
 STYLE2={'border':'1px black solid', 'zIndex':1, 'width':800, 'height':400}
 
-DISPLAY_STYLE = {
+AREA_STYLE = {
     "transition": "margin-left .5s",
     "margin-left": 23,
     "margin-top": 35,
@@ -29,18 +31,37 @@ DISPLAY_STYLE = {
     'fontSize': 10,
     'zIndex':1,
     'border':'1px black solid',
-    'width': '40%',
+    'width': '50%',
+    'zIndex':1,
+}
+
+PIE_STYLE = {
+    "transition": "margin-left .5s",
+    "margin-left": 23,
+    "margin-top": 35,
+    "padding": "1rem 1rem",
+    "background-color": "#f8f9fa",
+    'fontSize': 10,
+    'zIndex':1,
+    'border':'1px black solid',
+    'width': '46%',
     'zIndex':1,
 }
 
 graph = dcc.Graph(
-    figure=bar_chart,
+    figure={},
     id='graph', clickData=None, hoverData=None,
-    config=CONFIG, style=STYLE,
+    config=CONFIG, style=BAR_STYLE,
 )
 
 area_graph = dcc.Graph(
-    figure=area_chart,
+    figure={},
     id='area_chart', clickData=None, hoverData=None,
-    config=CONFIG, style=DISPLAY_STYLE,
+    config=CONFIG, style=AREA_STYLE,
+)
+
+pie_graph = dcc.Graph(
+    figure={},
+    id='pie_chart', clickData=None, hoverData=None,
+    config=CONFIG, style=PIE_STYLE,
 )

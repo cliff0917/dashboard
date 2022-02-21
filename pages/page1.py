@@ -1,7 +1,9 @@
 import dash
-from dash import dcc, html, callback
+import dash_core_components as dcc
+import dash_html_components as html
+# from dash import dcc, html, callback
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output, State, ALL
+from dash.dependencies import Input, Output, State#, ALL
 
 from components import collapse_item, navbar, sidebar, fields, menubar, table, graph, showData, datePicker
 

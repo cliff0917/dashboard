@@ -11,3 +11,9 @@ def connect_db(dir_path, sudoPassword):
     if current_db == []:
         create_db.createDB(posts, dir_path, sudoPassword)
     return client, posts
+
+def connect_to_db():
+    client = MongoClient()
+    db = client['pythondb']
+    posts = db.posts
+    return posts

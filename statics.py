@@ -4,9 +4,8 @@ import plotly.express as px
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 
+from database import connect
 from components import collapse_item
-
-interval_title = {'30min': '30 minutes', '1H': 'hour', '3H': '3 hours', '1D': 'day'}
 
 # 將 interval 轉成 timestamp 格式
 def timestamp_format(intervals, endDate):
@@ -29,9 +28,7 @@ def timestamp_format(intervals, endDate):
 
 def interval_cnt(startDate, endDate, freqs):
     # connect to database
-    client = MongoClient()
-    db = client['pythondb']
-    posts = db.posts
+    posts = connect.connect_to_db()
 
     # 根據 interval 切割 startDate ~ endDate
     intervals = list(pd.date_range(startDate, endDate, freq=freqs))
@@ -72,19 +69,6 @@ def transfer(date):
     date = date[0][:-3] + '+0800'
     return date
 
-# 初始化最一開始的圖, 計算從昨天~現在的 data ,interval=30分
-def get_one_day():
-    yesterday, now = get_time()
-
-    freq = '30min'
-    intervals, cnt, df, dataNum = interval_cnt(yesterday, now, freq)
-
-    if dataNum == 0:
-        return {}, f'從 {yesterday} 到 {now}', '0 hits', df
-
-    fig = px.bar(x=intervals[:-1], y=cnt, labels={'x': 'timestamp per 30 mins', 'y':'Count'})
-    return fig, f'從 {yesterday} 到 {now}', f'{dataNum} hits', df
-
 # 得到 從昨天~現在的時間
 def get_time():
     Taipei = pytz.timezone('Asia/Taipei')
@@ -94,49 +78,6 @@ def get_time():
     now = transfer(now)
     yesterday = transfer(yesterday)
     return yesterday, now
-
-def security_event_graph(startDate, endDate, col_name, freqs):
-    drop_null = {col_name:{"$exists": True}}
-    display_cols = {'_id':0, col_name:1}
-
-    # connect to database
-    client = MongoClient()
-    db = client['pythondb']
-    posts = db.posts
-
-    # get the set of col_values
-    values = posts.distinct('rule.level')
-
-    intervals = list(pd.date_range(startDate, endDate, freq=freqs))
-    intervals = timestamp_format(intervals, endDate) # 轉成 timestamp 格式
-
-    cnt = [[] for i in range(len(values))]
-    dic = {values[i]:i for i in range(len(values))}
-    
-    for i in range(1, len(intervals[:-1])):
-        for value in values:
-            result = posts.count_documents({'$and':[{'timestamp':{"$gte":intervals[i-1]}},{'timestamp':{"$lt":intervals[i]}}, {col_name:value}]})
-            cnt[dic[value]].append(result)
-    for value in values:
-        result = posts.count_documents({'$and':[{'timestamp':{"$gt":intervals[-2]}},{'timestamp':{"$lte":intervals[-1]}}, {col_name:value}]})
-        cnt[dic[value]].append(result)
-
-    data = {'time':intervals[:-1]}
-    for i in range(len(values)):
-        data[values[i]] = cnt[i]
-    df = pd.DataFrame(data)
-
-    fig = px.area(df, x="time", y=values, title="<b>Alert level evolution</b>", 
-              labels={"time":f"timestamp per {interval_title[freqs]}", "value": "Count", "variable": col_name},
-              hover_data={"time":False}
-            )
-    fig.update_layout(hovermode="x unified")
-    return fig
-
-def get_area(col_name):
-    yesterday, now = get_time()
-    fig = security_event_graph(yesterday, now, col_name, '30min')
-    return fig
 
 # convert string to datetime format
 def string_to_time(time):

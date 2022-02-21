@@ -2,11 +2,8 @@ from dash import dash_table
 
 from components import graph
 
-df = graph.df
-
 table = dash_table.DataTable(
-    columns=[{'name': column, 'id': column} for column in df.columns],
-    data=df.to_dict('records'),
+
     virtualization=True,
     style_cell={'textAlign': 'left', 'maxWidth': 135},
     sort_action='custom',
@@ -26,12 +23,5 @@ table = dash_table.DataTable(
         'border':'1px black solid',
         'minWidth': '100%',
     },
-    tooltip_header={i: i for i in df.columns},
-    tooltip_data=[
-        {
-            column: {'value': f'{column}\n\n{value}', 'type': 'markdown'}
-            for column, value in row.items()
-        } for row in df.to_dict('records')
-    ],
     id='table',
 )
