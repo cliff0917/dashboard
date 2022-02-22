@@ -15,8 +15,9 @@ CONFIG={
     'doubleClick': 'reset',  # 'reset', 'autosize' or 'reset+autosize', False
     'showTips': True,       # True, False
     'displayModeBar': True,  # True, False, 'hover'
-    'watermark': True,
+    'watermark': False,
     'modeBarButtonsToRemove': ['pan2d','select2d'],
+    'displaylogo': False
 }
 
 BAR_STYLE={'border':'1px black solid', 'zIndex':1}
