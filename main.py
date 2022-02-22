@@ -2,7 +2,9 @@ import warnings
 
 warnings.filterwarnings("ignore", category=Warning)
 
+import os
 import dash
+import webbrowser
 import dash_bootstrap_components as dbc
 from pymongo import MongoClient
 from dash import dcc, html, callback
@@ -56,8 +58,13 @@ def display_page(pathname):
     elif pathname == '/Security-Events':
         return security_events.layout
     
-    # 若非以上路徑, 則 return 404 message
-    return nonExist.layout
+    return nonExist.layout  # 若非以上路徑, 則 return 404 message
 
 if __name__ == '__main__':
     app.run_server(debug=True, dev_tools_props_check=False)
+    """ pid = os.fork()
+    if pid != 0:
+        app.run_server(dev_tools_props_check=False)
+    else:
+        url = "http://127.0.0.1:8050/"
+        webbrowser.open(url) """

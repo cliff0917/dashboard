@@ -18,5 +18,5 @@ menu_bar = html.Div(
         ),
     ],
     id="menu_bar",
-    style={"background-color":"#f8f9fa", 'border':'1px black solid', 'position':'fixed',  'width':'100%', 'zIndex':2},
+    style={"background-color":"#f8f9fa", 'border':'1px black solid', 'position':'fixed',  'width':'100%', 'zIndex':3},
 )
