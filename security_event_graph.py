@@ -8,7 +8,9 @@ from database import connect
 from statics import timestamp_format
 
 global interval_title
-interval_title = {'30min': '30 minutes', '1H': 'hour', '3H': '3 hours', '1D': 'day'}
+interval_title={'1min': 'minute', '5min': '5 minutes', '10min': '10 minutes','30min': '30 minutes', 
+                '1H': 'hour', '3H': '3 hours', '12H': '12 hours', 
+                '1D': 'day', '7D': '7 days', '30D': '30days'}
 
 def update_area(startDate, endDate, col_name, freqs):
     global interval_title
@@ -44,10 +46,10 @@ def update_area(startDate, endDate, col_name, freqs):
         data[values[i]] = cnt[i]
     df = pd.DataFrame(data)
 
-    fig = px.area(df, x="time", y=values, title="<b>Alert level evolution</b>", 
+    fig=px.area(df, x="time", y=values, title="<b>Alert level evolution</b>", 
               labels={"time":f"timestamp per {interval_title[freqs]}", "value": "Count", "variable": col_name},
               hover_data={"time":False}
-            )
+        )
     fig.update_layout(hovermode="x unified")
     return fig
 

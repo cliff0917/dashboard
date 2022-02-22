@@ -104,13 +104,29 @@ def get_freq(startDate, endDate):
     endDate = string_to_time(endDate)
 
     days = (endDate-startDate).days
-    if days < 2:
+    seconds = (endDate-startDate).seconds
+    if days == 0:
+        if seconds >= 1*60*60 and seconds < 3*60*60:    # 1 <= x < 3 (hours)
+            freqs = '1min'
+        elif seconds >= 3*60*60 and seconds < 8*60*60:  # 3 <= x < 8 (hours)
+            freqs = '5min'
+        elif seconds >= 8*60*60 and seconds < 17*60*60:  # 8 <= x < 17 (hours)
+            freqs = '10min'
+        elif seconds >= 17*60*60:   # x >= 17 (hours)
+            freqs = '30min'
+    elif days < 2:  #  17 <= x < 48 (hours)
         freqs = '30min'
     elif days >=2 and days < 5:
         freqs = '1H' 
-    elif days >= 5 and days <=7:
+    elif days >= 5 and days < 12:
         freqs = '3H'
-    else:
+    elif days >= 12 and days < 50:
+        freqs = '12H'
+    elif days >= 50 and days < 365:
         freqs = '1D'
-    # print(freqs)
+    elif days >= 365 and days < 3*365:  # 1 <= x < 3 (years)
+        freqs = '7D'
+    else:  # x > 3 (years)
+        freqs = '30D'
+    print(freqs)
     return freqs
