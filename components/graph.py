@@ -16,8 +16,8 @@ CONFIG={
     'showTips': True,       # True, False
     'displayModeBar': True,  # True, False, 'hover'
     'watermark': False,
+    'displaylogo': False,
     'modeBarButtonsToRemove': ['pan2d','select2d'],
-    'displaylogo': False
 }
 
 BAR_STYLE={'border':'1px black solid', 'zIndex':1}
@@ -48,9 +48,9 @@ PIE_STYLE = {
     'zIndex':1,
 }
 
-graph = dcc.Graph(
+bar_chart = dcc.Graph(
     figure={},
-    id='graph', clickData=None, hoverData=None,
+    id='bar_chart', clickData=None, hoverData=None,
     config=CONFIG, style=BAR_STYLE,
 )
 

@@ -5,11 +5,11 @@ from components import table, graph
 
 # components
 table = table.table
-graph = graph.graph
+bar_chart = graph.bar_chart
 
 show_data = dbc.Col(
     [
-        graph,
+        bar_chart,
         html.Br(),
         table,
     ],

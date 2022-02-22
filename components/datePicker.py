@@ -10,7 +10,7 @@ from statics import update_bar, get_freq
 from components import table, graph, collapse_item
 
 table = table.table
-graph = graph.graph
+bar_chart = graph.bar_chart
 
 date_picker = dbc.Row(
     [
@@ -58,7 +58,7 @@ def localTime(time):
 # 按下 Update 按鈕的觸發事件
 @callback(
     [
-        Output('graph', 'figure'),
+        Output('bar_chart', 'figure'),
         Output('datetime-output', 'children'),
         Output('dataNum', 'children'),
         Output('table', 'data'),

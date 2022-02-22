@@ -1,9 +1,11 @@
 # dashboard
 ## 環境安裝
 ```
+git clone https://github.com/cliff0917/dashboard.git
 sudo apt-get install -y mongodb
 conda create -y -n dashboard python=3.7
 conda activate dashboard
+cd dashboard
 pip install -r requirements.txt
 python main.py
 ```
