@@ -37,7 +37,7 @@ def createDB(database, dir_path, sudoPassword):
             try:
                 json_files = sorted(glob.glob(f'{year_}/{month}/*.json'))  # 找出所有日期的 .json files, 並由小到大排序
                 for json_file in json_files:
-                    f = open(json_file, 'r')
+                    f = open(json_file, 'r+')
                     lines = f.readlines()
                     try:
                         json_lines = [json.loads(line) for line in lines]

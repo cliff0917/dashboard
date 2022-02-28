@@ -35,6 +35,7 @@ def update_area(startDate, endDate, col_name, freqs):
                                                     {'timestamp':{"$lt":intervals[i]}}, 
                                                     {col_name:value}]})
             cnt[dic[value]].append(result)
+
     for value in values:
         result = posts.count_documents({'$and':[{'timestamp':{"$gt":intervals[-2]}}, 
                                                 {'timestamp':{"$lte":intervals[-1]}}, 
@@ -47,7 +48,7 @@ def update_area(startDate, endDate, col_name, freqs):
     df = pd.DataFrame(data)
 
     fig=px.area(df, x="time", y=values, title="<b>Alert level evolution</b>", 
-              labels={"time":f"timestamp per {interval_title[freqs]}", "value": "Count", "variable": col_name},
+              labels={"time":f"<b>timestamp per {interval_title[freqs]}</b>", "value": "<b>Count</b>", "variable": col_name},
               hover_data={"time":False}
         )
     fig.update_layout(hovermode="x unified")
@@ -80,7 +81,7 @@ def update_pie(startDate, endDate, col_name):
     fig.update_layout(title_text="<b>Alert</b>")
     return fig
 
-def update_donut(startDate, endDate, col_name):
+def update_donut(startDate, endDate, col_name, title):
     cnt, set_values = calculate_cnt(startDate, endDate, col_name)
     fig = go.Figure(go.Pie(
         name = col_name,
@@ -90,5 +91,5 @@ def update_donut(startDate, endDate, col_name):
         hovertemplate = "%{label} <br>出現次數:%{value} <br>佔比: %{percent}",
         hole=0.8,
     ))
-    fig.update_layout(title_text="<b>Top 5 agents</b>")
+    fig.update_layout(title_text=f"<b>{title}</b>")
     return fig

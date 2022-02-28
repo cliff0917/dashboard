@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-from database import create_db
+from database import create_db, update
 
 def connect_db(dir_path, sudoPassword):
     client = MongoClient()
@@ -10,6 +10,8 @@ def connect_db(dir_path, sudoPassword):
     posts = db.posts
     if current_db == []:
         create_db.createDB(posts, dir_path, sudoPassword)
+    else:
+        update.update_db(posts, dir_path)
     return client, posts
 
 def connect_to_db():

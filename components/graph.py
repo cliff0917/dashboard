@@ -60,15 +60,15 @@ area_chart = dcc.Graph(
     config=CONFIG, style=AREA_STYLE,
 )
 
-pie_chart = dcc.Graph(
+donut_chart1 = dcc.Graph(
     figure={},
-    id='pie_chart', clickData=None, hoverData=None,
+    id='donut_chart1', clickData=None, hoverData=None,
     config=CONFIG, style=PIE_STYLE,
 )
 
-donut_chart = dcc.Graph(
+donut_chart2 = dcc.Graph(
     figure={},
-    id='donut_chart', clickData=None, hoverData=None,
+    id='donut_chart2', clickData=None, hoverData=None,
     config=CONFIG, style=PIE_STYLE,
 )
 

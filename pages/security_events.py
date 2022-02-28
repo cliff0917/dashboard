@@ -10,20 +10,9 @@ from security_event_graph import update_area, update_pie, update_donut
 
 date = datePicker.se_date
 area_chart = graph.area_chart
-pie_chart = graph.pie_chart
-donut_chart = graph.donut_chart
+donut_chart1 = graph.donut_chart1
+donut_chart2 = graph.donut_chart2
 se_bar_chart = graph.se_bar_chart
-
-# layout = html.Div(
-#     [
-#         date,
-#         dbc.Row(
-#             area_graph,
-#             style={'margin-left':'25px'},
-#         )
-#     ],
-#     style=fields.OTHER_FIELD_STYLE,
-# )
 
 DISPLAY_STYLE = {
     "transition": "margin-left .5s",
@@ -34,7 +23,6 @@ DISPLAY_STYLE = {
     'fontSize': 10,
     'zIndex':1,
     'border':'1px black solid',
-    # 'width': '40%',
     'zIndex':2,
 }
 
@@ -53,12 +41,12 @@ layout = html.Div(
         dbc.Row(
             [
                 area_chart,
-                pie_chart,
+                donut_chart1,
             ], 
         ),
         dbc.Row(
             [
-                donut_chart,
+                donut_chart2,
                 se_bar_chart,
             ], 
         ),
@@ -69,8 +57,8 @@ layout = html.Div(
     [
         Output('area_chart', 'figure'),
         Output('se-datetime-output', 'children'),
-        Output('pie_chart', 'figure'),
-        Output('donut_chart', 'figure'),
+        Output('donut_chart1', 'figure'),
+        Output('donut_chart2', 'figure'),
         Output('se_bar_chart', 'figure'),
     ],
     [
@@ -95,11 +83,12 @@ def update(n_clicks, startDate, endDate):
 
         # get chart
         area_fig = update_area(startDate, endDate, 'rule.level', freqs)
-        pie_fig = update_pie(startDate, endDate, 'rule.mitre.technique')
-        donut_fig = update_donut(startDate, endDate, 'agent.name')
+        donut_fig1 = update_donut(startDate, endDate, 'rule.mitre.technique', 'Alert')
+        donut_fig2 = update_donut(startDate, endDate, 'agent.name', 'Top 5 agents')
         bar_fig, _ = update_bar(startDate, endDate, freqs, ['agent.name'])
 
-        return [area_fig, f'從 {startDate} 到 {endDate}', pie_fig, donut_fig, bar_fig]
+        donut_fig1.update_layout(legend=dict(x=1.2)) # legend 會擋到 label, 故往左移
+        return [area_fig, f'從 {startDate} 到 {endDate}', donut_fig1, donut_fig2, bar_fig]
 
     # 已經有按過 update, 但不等於 next_click, 代表 user 正在選日期 => page info 皆不變
     elif n_clicks:

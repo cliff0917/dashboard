@@ -22,7 +22,7 @@ date_picker = dbc.Row(
 
 datetime_output = html.H6(id='datetime-output', style={'margin-top': '20px', 'margin-left': '7px',})
 hitNum = html.H3(style={'textAlign': 'center'}, id='dataNum')
-se_datetime_output = html.H6(id='se-datetime-output', style={'margin-left': '7px'})
+se_datetime_output = html.H6(id='se-datetime-output', style={'margin-top': '20px', 'margin-left': '7px'})
 
 date = dbc.Col(
     [

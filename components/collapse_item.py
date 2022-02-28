@@ -4,10 +4,12 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html, callback, dash_table
 from dash.dependencies import Input, Output, State, ALL
 
+import globals
 from database import connect
 
 # connect to database
-posts = connect.connect_to_db()
+globals.initialize()
+posts = globals.posts
 
 data = posts.find({}, {'_id':0})
 df = pd.json_normalize(data)
