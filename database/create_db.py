@@ -52,7 +52,7 @@ def createDB(database, dir_path, sudoPassword):
         database.insert_many(data) # insert data into mongoDB
     except:
         print(f'重新 insert {error_file}')
-        f = open(error_file, 'r')
+        f = open(error_file, 'r+')
         lines = f.readlines()
         json_lines = [json.loads(line) for line in lines]
         num += len(lines)

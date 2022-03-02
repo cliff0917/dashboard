@@ -1,8 +1,7 @@
 import pandas as pd
-from pymongo import MongoClient
 import dash_bootstrap_components as dbc
+from dash.dependencies import Input, Output
 from dash import dcc, html, callback, dash_table
-from dash.dependencies import Input, Output, State, ALL
 
 import globals
 

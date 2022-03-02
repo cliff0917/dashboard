@@ -6,15 +6,13 @@ import os
 import dash
 import webbrowser
 import dash_bootstrap_components as dbc
-from pymongo import MongoClient
 from dash import dcc, html, callback
-from dash.dependencies import Input, Output, State, ALL
-
-from pages import home, discover, security_events, nonExist
+from dash.dependencies import Input, Output
 
 import globals
 from database import create_db
-from components import collapse_item, navbar, sidebar, fields, menubar, table, graph, showData
+from components import navbar, menubar, showData
+from pages import home, discover, security_events, nonExist
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 

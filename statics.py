@@ -1,7 +1,5 @@
-import pytz
 import pandas as pd
 import plotly.express as px
-from pymongo import MongoClient
 from datetime import datetime, timedelta
 
 import security_event_graph

@@ -1,7 +1,7 @@
 import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
-from dash.dependencies import Input, Output, State, ALL
+from dash.dependencies import Input, Output
 
 import globals
 from statics import get_freq, update_bar
