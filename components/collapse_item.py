@@ -5,7 +5,6 @@ from dash import dcc, html, callback, dash_table
 from dash.dependencies import Input, Output, State, ALL
 
 import globals
-from database import connect
 
 # connect to database
 globals.initialize()

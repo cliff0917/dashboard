@@ -94,6 +94,11 @@ def update(n_clicks, startDate, endDate):
             } for row in df.to_dict('records')
         ]
         tooltip_header = {i: i for i in df.columns}
+
+        # 解決 data table 中 list 的顯示問題, 將 df 中的 list 轉成 string 用逗號隔開, 並串接在一起
+        for column in list(df.columns):
+            df[column] = [', '.join(map(str, l)) if isinstance (l, list) else l for l in df[column]]
+
         return [bar_fig, f'從 {startDate} 到 {endDate}', f'{len(df)} hits', df.to_dict('record'), columns, tooltip_data, tooltip_header]
 
     # 已經有按過 update, 但不等於 next_click, 代表 user 正在選日期 => page info 皆不變

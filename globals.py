@@ -7,4 +7,4 @@ def initialize():
     dir_path = '.'  # /var/ossec/logs/alerts
     update_next_clicks = 1
     update2_next_clicks = 1
-    client, posts = connect.connect_db(dir_path, sudoPassword)
+    client, posts = connect.get_current_db(dir_path, sudoPassword)

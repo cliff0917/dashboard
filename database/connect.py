@@ -2,7 +2,7 @@ from pymongo import MongoClient
 
 from database import create_db, update
 
-def connect_db(dir_path, sudoPassword):
+def get_current_db(dir_path, sudoPassword):
     client = MongoClient()
     db = client['pythondb']
     # client.drop_database('pythondb') # delete db
