@@ -27,28 +27,24 @@ DISPLAY_STYLE = {
     'zIndex':1,
 }
 
-def serve_layout():
-    layout = html.Div(
-        [
-            dbc.Row(
-                [
-                    fields_bar,
-                    dbc.Col(
-                        [
-                            date,
-                            show_data,
-                        ],
-                        style=DISPLAY_STYLE,
-                    ), 
-                ],
-            ),
-            dcc.ConfirmDialog(
-                id='confirm',
-                message='請先選擇fields(不選的話預設為全部的fields), 再選日期',
-                displayed=True,
-            ),
-        ],
-    )
-    return layout
-
-layout = serve_layout()
+layout = html.Div(
+    [
+        dbc.Row(
+            [
+                fields_bar,
+                dbc.Col(
+                    [
+                        date,
+                        show_data,
+                    ],
+                    style=DISPLAY_STYLE,
+                ), 
+            ],
+        ),
+        # dcc.ConfirmDialog(
+        #     id='confirm',
+        #     message='請先選擇fields(不選的話預設為全部的fields), 再選日期',
+        #     displayed=True,
+        # ),
+    ],
+)

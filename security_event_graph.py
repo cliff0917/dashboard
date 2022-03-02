@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from datetime import datetime
 from pymongo import MongoClient
 
-from database import connect
+from database import get_db
 from statics import timestamp_format
 
 global interval_title
@@ -18,7 +18,7 @@ def update_area(startDate, endDate, col_name, freqs):
     display_cols = {'_id':0, col_name:1}
 
     # connect to database
-    posts = connect.connect_to_db()
+    posts = get_db.connect_db()
 
     # get the set of col_values
     values = posts.distinct('rule.level')
@@ -56,7 +56,7 @@ def update_area(startDate, endDate, col_name, freqs):
 
 def calculate_cnt(startDate, endDate, col_name):
     # connect to database
-    posts = connect.connect_to_db()
+    posts = get_db.connect_db()
 
     # get the set of col_values
     set_values = posts.distinct(col_name)
@@ -68,18 +68,6 @@ def calculate_cnt(startDate, endDate, col_name):
                                                 {'timestamp':{"$lte":endDate}}]})
         cnt.append(result)
     return cnt, set_values
-
-def update_pie(startDate, endDate, col_name):
-    cnt, set_values = calculate_cnt(startDate, endDate, col_name)
-    fig = go.Figure(go.Pie(
-        name = col_name,
-        values = cnt,
-        labels = set_values,
-        text = set_values,
-        hovertemplate = "%{label} <br>出現次數:%{value} <br>佔比: %{percent}",
-    ))
-    fig.update_layout(title_text="<b>Alert</b>")
-    return fig
 
 def update_donut(startDate, endDate, col_name, title):
     cnt, set_values = calculate_cnt(startDate, endDate, col_name)

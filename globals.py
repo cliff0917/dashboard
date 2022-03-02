@@ -1,4 +1,4 @@
-from database import connect
+from database import get_db
 
 def initialize(): 
     global posts, update_next_clicks, update2_next_clicks
@@ -7,4 +7,4 @@ def initialize():
     dir_path = '.'  # /var/ossec/logs/alerts
     update_next_clicks = 1
     update2_next_clicks = 1
-    client, posts = connect.get_current_db(dir_path, sudoPassword)
+    client, posts = get_db.get_current_db(dir_path, sudoPassword)

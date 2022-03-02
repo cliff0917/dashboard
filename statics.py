@@ -5,7 +5,7 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 
 import security_event_graph
-from database import connect
+from database import get_db
 
 # 將 interval 轉成 timestamp 格式
 def timestamp_format(intervals, endDate):
@@ -29,7 +29,7 @@ def timestamp_format(intervals, endDate):
 
 def update_bar(startDate, endDate, freqs, selected_fields):
     # connect to database
-    posts = connect.connect_to_db()
+    posts = get_db.connect_db()
 
     # 根據 interval 切割 startDate ~ endDate
     intervals = list(pd.date_range(startDate, endDate, freq=freqs))
@@ -73,25 +73,6 @@ def update_bar(startDate, endDate, freqs, selected_fields):
     fig.update_layout(hovermode="x unified")
 
     return fig, df
-    # return intervals, cnt, df, len(df)
-
-# convert datetime to string
-def transfer(date):
-    dateFormat = "%Y-%m-%d %H:%M:%S.%f%z"
-    date = datetime.strftime(date, dateFormat)
-    date = date.split('+')
-    date = date[0][:-3] + '+0800'
-    return date
-
-# 得到 從昨天~現在的時間
-def get_time():
-    Taipei = pytz.timezone('Asia/Taipei')
-    now = datetime.now(Taipei)
-    yesterday = now - timedelta(days=1)
-
-    now = transfer(now)
-    yesterday = transfer(yesterday)
-    return yesterday, now
 
 # convert string to datetime format
 def string_to_time(time):

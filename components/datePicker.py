@@ -105,4 +105,4 @@ def update(n_clicks, startDate, endDate):
     elif n_clicks:
         return [dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update]
 
-    return [{}, '請選取時間', '0 hits', pd.DataFrame().to_dict('record'), [], dash.no_update, dash.no_update]
+    return [{}, '請先選擇fields(不選的話預設為全部的fields), 再選時間', '0 hits', pd.DataFrame().to_dict('record'), [], dash.no_update, dash.no_update]

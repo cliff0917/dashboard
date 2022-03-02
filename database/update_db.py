@@ -1,9 +1,6 @@
 import json
 import pandas as pd
-from pymongo import MongoClient
 from datetime import datetime, timedelta
-
-from database import connect
 
 # generator
 def gen_dates(start, days):
@@ -49,10 +46,8 @@ def update_db(posts, dir_path):
     # 上次更新的最後一天之data數目
     last_cnt = posts.count_documents({'timestamp': {"$gte": last_time}})
 
-    data = []
-    dir_path = '.'
-
     # 特殊處理上次更新的最後一天
+    data = []
     last_y, last_m, last_d = get_time_info(dates_lst[0])
     f = open(f'{dir_path}/{last_y}/{convert_month[last_m]}/ossec-alerts-{last_d}.json', 'r+')
     lines = f.readlines()

@@ -6,7 +6,7 @@ from dash.dependencies import Input, Output, State, ALL
 import globals
 from statics import get_freq, update_bar
 from components import datePicker, fields, graph
-from security_event_graph import update_area, update_pie, update_donut
+from security_event_graph import update_area, update_donut
 
 date = datePicker.se_date
 area_chart = graph.area_chart

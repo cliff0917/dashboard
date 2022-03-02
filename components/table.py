@@ -4,7 +4,8 @@ from components import graph
 
 table = dash_table.DataTable(
     virtualization=True,
-    style_cell={'textAlign': 'left', 'maxWidth': 135},
+    style_cell={'textAlign': 'left', 'overflow': 'hidden',
+                'textOverflow': 'ellipsis','maxWidth': 185},
     sort_action='custom',
     sort_mode='multi',
     #filter_action="native",
