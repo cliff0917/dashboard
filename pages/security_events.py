@@ -53,6 +53,7 @@ layout = html.Div(
     ],
 )
 
+# 按下 Update 按鈕的觸發事件
 @callback(
     [
         Output('area_chart', 'figure'),

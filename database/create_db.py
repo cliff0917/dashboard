@@ -2,7 +2,13 @@ import os
 import json
 import glob
 import pandas as pd
+import pickle as pkl
 from pymongo import MongoClient
+
+def record_last(last_date_info):
+    file = open('last_date.pkl', 'wb')
+    pkl.dump(last_date_info, file)
+    file.close()
 
 def createDB(database, dir_path, sudoPassword):
 
@@ -31,19 +37,27 @@ def createDB(database, dir_path, sudoPassword):
     num = 0
     data = []
     error_file = ''
+    json_files = []
     for year_ in years:
         # 按照月份存取
         for month in months:
             try:
                 json_files = sorted(glob.glob(f'{year_}/{month}/*.json'))  # 找出所有日期的 .json files, 並由小到大排序
-                for json_file in json_files:
-                    f = open(json_file, 'r+')
+                for i in range(len(json_files)):
+                    f = open(json_files[i], 'r+')
                     lines = f.readlines()
+
+                    # 紀錄每月最後有資料的日期, data數目 => 紀錄 last date info
+                    if i == len(json_files)-1:
+                        day = json_files[i].split('.')[-2].split('-')[-1]
+                        last_date_info = [f'{year_[2:]}-{month_dict[month]}-{day}', len(lines)]
+                        record_last(last_date_info)
+
                     try:
                         json_lines = [json.loads(line) for line in lines]
                         num += len(lines)
                     except: 
-                        error_file = json_file
+                        error_file = json_files[i]
                     data += json_lines
                     # print(f'{json_file} 有 {len(lines)} 筆資料')
             except: 
