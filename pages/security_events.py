@@ -4,9 +4,9 @@ from dash import dcc, html, callback
 from dash.dependencies import Input, Output
 
 import globals
-from statics import get_freq, update_bar
-from components import datePicker, fields, graph
-from security_event_graph import update_area, update_donut
+from plot import area, donut, bar
+from process_time import process_time
+from components import datePicker, graph
 
 date = datePicker.se_date
 area_chart = graph.area_chart
@@ -76,17 +76,17 @@ def update(n_clicks, startDate, endDate):
             return [{}, '起始時間必須小於結束時間', {}, {}, {}]
 
         # 得到 interval
-        freqs = get_freq(startDate, endDate)
+        freqs = process_time.get_freq(startDate, endDate)
 
         # 修正 datetime 時差, 並 convert datetime to string
-        startDate = datePicker.localTime(startDate)
-        endDate = datePicker.localTime(endDate)
+        startDate = process_time.localTime(startDate)
+        endDate = process_time.localTime(endDate)
 
         # get chart
-        area_fig = update_area(startDate, endDate, 'rule.level', freqs)
-        donut_fig1 = update_donut(startDate, endDate, 'rule.mitre.technique', 'Alert')
-        donut_fig2 = update_donut(startDate, endDate, 'agent.name', 'Top 5 agents')
-        bar_fig, _ = update_bar(startDate, endDate, freqs, ['agent.name'])
+        area_fig = area.update(startDate, endDate, 'rule.level', freqs)
+        donut_fig1 = donut.update(startDate, endDate, 'rule.mitre.technique', 'Alert')
+        donut_fig2 = donut.update(startDate, endDate, 'agent.name', 'Top 5 agents')
+        bar_fig, _ = bar.update(startDate, endDate, freqs, ['agent.name'])
 
         donut_fig1.update_layout(legend=dict(x=1.2)) # legend 會擋到 label, 故往左移
         return [area_fig, f'從 {startDate} 到 {endDate}', donut_fig1, donut_fig2, bar_fig]

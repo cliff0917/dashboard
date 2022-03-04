@@ -1,14 +1,5 @@
 from dash import dcc
 
-# from statics import get_init_bar
-# from security_event_graph import get_init_area, get_init_pie
-
-# bar_chart, _, msg, df = get_init_bar()
-# dataCnt = msg.split(' ')[0]
-
-# area_chart = get_init_area('rule.level')
-# pie_chart = get_init_pie('rule.mitre.technique')
-
 CONFIG={
     'staticPlot': False,     # True, False
     'scrollZoom': True,      # True, False

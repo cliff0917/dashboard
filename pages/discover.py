@@ -4,13 +4,12 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output
 
-import globals, security_event_graph
-from statics import update_bar, get_freq
-from components import navbar, fields, menubar, showData, datePicker, table, collapse_item
+import globals
+from plot import bar
+from process_time import process_time
+from components import fields, showData, datePicker, collapse_item
 
 # components
-navbar = navbar.navbar
-menu_bar = menubar.menu_bar
 show_data = showData.show_data
 date = datePicker.date
 
@@ -71,12 +70,12 @@ def update(n_clicks, startDate, endDate):
             return [{}, '起始時間必須小於結束時間', '', pd.DataFrame().to_dict('record'), [], dash.no_update, dash.no_update]
 
         # 修正 datetime 時差, 並 convert datetime to string
-        startDate = datePicker.localTime(startDate)
-        endDate = datePicker.localTime(endDate)
+        startDate = process_time.localTime(startDate)
+        endDate = process_time.localTime(endDate)
 
         # 計算每個 interval 中的 data 個數
-        freqs = get_freq(startDate, endDate)
-        bar_fig, df = update_bar(startDate, endDate, freqs, collapse_item.selected_fields)
+        freqs = process_time.get_freq(startDate, endDate)
+        bar_fig, df = bar.update(startDate, endDate, freqs, collapse_item.selected_fields)
         columns = [{'name': column, 'id': column} for column in df.columns]
 
         tooltip_data=[

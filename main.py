@@ -12,7 +12,7 @@ from dash.dependencies import Input, Output
 import globals
 from database import create_db
 from components import navbar, menubar, showData
-from pages import home, discover, security_events, nonExist
+from pages import home, discover, security_events, non_exist
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
@@ -56,7 +56,7 @@ def display_page(pathname):
     elif pathname == '/Security-Events':
         return security_events.layout
     
-    return nonExist.layout  # 若非以上路徑, 則 return 404 message
+    return non_exist.layout  # 若非以上路徑, 則 return 404 message
 
 if __name__ == '__main__':
     app.run_server(debug=True, dev_tools_props_check=False)
