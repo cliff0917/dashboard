@@ -1,7 +1,8 @@
 import pandas as pd
 from datetime import datetime, timedelta
 
-interval_title={'1min': 'minute', '5min': '5 minutes', '10min': '10 minutes','30min': '30 minutes', 
+interval_title={'1s': 'second', '5s': '5 seconds', '10s': '10 seconds', '30s': '30 seconds',
+                '1min': 'minute', '5min': '5 minutes', '10min': '10 minutes','30min': '30 minutes', 
                 '1H': 'hour', '3H': '3 hours', '12H': '12 hours', 
                 '1D': 'day', '7D': '7 days', '30D': '30days'}
 
@@ -45,7 +46,15 @@ def get_freq(startDate, endDate):
     days = (endDate-startDate).days
     seconds = (endDate-startDate).seconds
     if days == 0:
-        if seconds >= 1*60*60 and seconds < 3*60*60:    # 1 <= x < 3 (hours)
+        if seconds < 5*60: # x <= 1 (minutes)
+            freqs = '1s'
+        elif seconds >= 5*60 and seconds < 7*60:   # 5 <= x < 7 (minutes)
+            freqs = '5s'
+        elif seconds >= 7*60 and seconds < 13*60:   # 7 <= x < 13 (minutes)
+            freqs = '10s'
+        elif seconds >= 13*60 and seconds < 38*60:   # 13 <= x < 38 (minutes)
+            freqs = '30s'
+        elif seconds >= 38*60 and seconds < 3*60*60:    # 1 <= x < 3 (hours)
             freqs = '1min'
         elif seconds >= 3*60*60 and seconds < 8*60*60:  # 3 <= x < 8 (hours)
             freqs = '5min'
