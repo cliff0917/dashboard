@@ -1,6 +1,6 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import html, callback
+from dash import dcc, html, callback
 from dash.dependencies import Input, Output
 
 import globals
@@ -9,6 +9,7 @@ from components import fields, datePicker, discover_graph
 
 # components
 date = datePicker.date
+hitNum = datePicker.hitNum
 fields_bar = html.Div(fields.fields_bar)
 
 DISPLAY_STYLE = {
@@ -19,7 +20,7 @@ DISPLAY_STYLE = {
     'fontSize': 10,
     'zIndex':1,
     'border':'1px black solid',
-    'width': '900px',
+    'width': '1605px',
     'zIndex':1,
 }
 
@@ -31,13 +32,18 @@ layout = html.Div(
                 dbc.Col(
                     [
                         date,
-                        # show_data,
-                        dbc.Col(
-                            id='graph-and-table',
-                        )
+                        dcc.Loading(
+                            html.Div(
+                                [
+                                    hitNum,
+                                    dbc.Col(id='graph-and-table'),
+                                ],
+                            ),
+                            fullscreen=True,
+                        ),
                     ],
                     style=DISPLAY_STYLE,
-                ), 
+                ),
             ],
         ),
     ],
@@ -72,7 +78,7 @@ def update(n_clicks, startDate, endDate):
 
         # update display
         return discover_graph.update_display(startDate, endDate, freqs)
-    
+
     elif globals.initalization == 1:
         # initialize display
         globals.initalization = 0

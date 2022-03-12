@@ -78,14 +78,14 @@ def click_btn(add_clicks, del_clicks, btn_name):
         add_next_click[field_idx] += 1
         field_name = all_fields[field_idx]
         selected_fields.append(field_name)
-        print(selected_fields)
+        # print(selected_fields)
         return [False, False,True, True]
 
     # add_btn 沒被按 => 則為 del_btn 被按, 或者add_btn, del_btn都沒被按(網頁初始狀態)
     else:
         try:
             selected_fields.remove(all_fields[field_idx])
-            print(selected_fields)
+            # print(selected_fields)
         except:
             pass
         return [True, True, False, False]

@@ -1,6 +1,6 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import html, callback
+from dash import dcc, html, callback
 from dash.dependencies import Input, Output
 
 import globals
@@ -22,7 +22,7 @@ DISPLAY_STYLE = {
 }
 
 COL_STYLE = {
-    'fontSize':20, 
+    'fontSize':20,
     'margin-left':155,
 }
 
@@ -35,7 +35,7 @@ layout = html.Div(
                         date,
                     ],
                     style=DISPLAY_STYLE,
-                ), 
+                ),
             ],
         ),
         dbc.Row(
@@ -43,39 +43,44 @@ layout = html.Div(
                 dbc.Col(
                     [
                         html.H4('Total'),
-                        html.H4('--', style={'fontSize':30, 'color':'blue', 'align':'center'}, id='total'),#'margin-left':'10.5rem'
+                        html.H4('--', style={'fontSize':30, 'color':'blue', 'align':'center'}, id='total'),
                     ],
                     style={'width':3},
                 ),
                 dbc.Col(
                     [
                          html.H4('Level 12 or above alerts'),
-                         html.H4('--', style={'fontSize':30, 'color':'red', 'align':'center'}, id='level12'),#'margin-left':'16rem',
+                         html.H4('--', style={'fontSize':30, 'color':'red', 'align':'center'}, id='level12'),
                     ],
                     style={'width':3},
                 ),
                 dbc.Col(
                     [
                         html.H4('Authentication failure'),
-                        html.H4('--', style={'fontSize':30, 'color':'red', 'align':'center'}, id='fail'),#'margin-left':'16rem',
+                        html.H4('--', style={'fontSize':30, 'color':'red', 'align':'center'}, id='fail'),
                     ],
                     style={'width':3},
                 ),
                 dbc.Col(
                     [
                         html.H4('Authentication success'),
-                        html.H4('--', style={'fontSize':30, 'color':'green', 'align':'center'}, id='success'),#'margin-left':'17rem', 
+                        html.H4('--', style={'fontSize':30, 'color':'green', 'align':'center'}, id='success'),
                     ],
                     style={'width':3},
                 ),
             ],
             style={'margin-top':10, 'margin-left':'10rem'},
         ),
-        dbc.Row(
-            id='graph-frist-row', 
-        ),
-        dbc.Row(
-            id='graph-second-row',
+        dcc.Loading(
+            [
+                dbc.Row(
+                    id='graph-frist-row',
+                ),
+                dbc.Row(
+                    id='graph-second-row',
+                ),
+            ],
+            fullscreen=True,
         ),
     ],
 )
@@ -115,7 +120,7 @@ def update(n_clicks, startDate, endDate):
 
         # update graph
         return se_graph.update_graph(startDate, endDate, freqs)
-        
+
 
     elif globals.initalization == 1:
         # initialize graph

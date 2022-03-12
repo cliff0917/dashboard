@@ -12,13 +12,12 @@ date_picker = dbc.Row(
 )
 
 datetime_output = html.H6(id='datetime-output', style={'margin-top': '20px', 'margin-left': '7px',})
-hitNum = html.H1('--', style={'textAlign': 'center'}, id='dataNum')
+hitNum = html.H1('載入資料中...', style={'textAlign': 'center'}, id='dataNum')
 
 date = dbc.Col(
     [
         date_picker,
         datetime_output,
-        hitNum,
     ],
 )
 
