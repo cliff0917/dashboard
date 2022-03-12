@@ -25,7 +25,7 @@ def update_display(startDate, endDate, freqs):
     for column in list(df.columns):
         df[column] = [', '.join(map(str, l)) if isinstance (l, list) else l for l in df[column]]
 
-    # 根據 columns 名稱長度, 自動調整 data table 的 header 寬度
+    # 根據 column 名稱長度, 自動調整 data table 的 header 寬度
     long_column_names = [{"if": {"column_id": column}, "min-width": "300px"} for column in df.columns if len(column) >= 30]
     med_column_names = [{"if": {"column_id": column}, "min-width": "225px"} for column in df.columns if (len(column) > 15 and len(column)) < 30]
     small_column_names = [{"if": {"column_id": column}, "min-width": "120px"} for column in df.columns if len(column) <= 15]
@@ -36,13 +36,19 @@ def update_display(startDate, endDate, freqs):
         data=df.to_dict('records'),
         columns = [{'name': column, 'id': column} for column in df.columns],
         virtualization=True,
-        style_cell={'textAlign': 'left', 'overflow': 'hidden',
-                    'textOverflow': 'ellipsis', 'minWidth': 240, 'maxWidth': 240},
         sort_action='custom',
         sort_mode='multi',
+        # 要 minWidth, maxWidth 同時設一樣, 再搭配 fixed_rows, 才能 fixed header
+        style_cell={
+            'textAlign': 'left',
+            'overflow': 'hidden',
+            'textOverflow': 'ellipsis',
+            'minWidth': 240,
+            'maxWidth': 240,
+        },
         fixed_rows={
             'headers': True,
-            'data': 0
+            'data': 0,
         },
         style_cell_conditional=adjusted_columns,
         #filter_action="native",

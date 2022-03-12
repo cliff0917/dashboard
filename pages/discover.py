@@ -20,7 +20,7 @@ DISPLAY_STYLE = {
     'fontSize': 10,
     'zIndex':1,
     'border':'1px black solid',
-    'width': '1605px',
+    'width': '1555px',
     'zIndex':1,
 }
 

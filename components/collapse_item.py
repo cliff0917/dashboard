@@ -16,7 +16,7 @@ all_fields = list(df.columns)
 # 新增 fields_btn
 add_collapse_combines = []
 del_collapse_combines = []
-field_style = {'margin-top':'7px', 'margin-left':'50px', "width": 120}
+field_style = {'margin-top':'7px', 'margin-left':'50px',"width": 150}
 add_btn_style = {'color':'green', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
 del_btn_style = {'color':'red', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
 

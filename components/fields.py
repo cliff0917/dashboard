@@ -11,7 +11,7 @@ FIELD_STYLE = {
     "padding": "2rem 1rem",
     "background-color": "#f8f9fa",
     'fontSize': 10,
-    'width':284,
+    'width':335,
     "maxHeight": "738px",
     'zIndex':1,
     'border':'1px black solid',
@@ -32,7 +32,7 @@ fields_bar = dbc.Col(
             [
                 dbc.Row(
                     [
-                        html.B('Selected fields:', style={'fontSize':20})      
+                        html.B('Selected fields:', style={'fontSize':20})
                     ],
                 ),
                 dbc.Row(
