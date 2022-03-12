@@ -77,14 +77,6 @@ layout = html.Div(
             ],
             style={'margin-top':10, 'margin-left':'10rem'},
         ),
-        # dbc.Row(
-        #     [
-        #         html.H4('--', style={'fontSize':30,'margin-left':'11.5rem', 'color':'blue', 'align':'center'}, id='total'),
-        #         html.H4('--', style={'fontSize':30,'margin-left':'34rem', 'color':'red', 'align':'center'}, id='level12'),
-        #         html.H4('--', style={'fontSize':30,'margin-left':'28rem', 'color':'red', 'align':'center'}, id='fail'),
-        #         html.H4('--', style={'fontSize':30,'margin-left':'30rem', 'color':'green', 'align':'center'}, id='success'),
-        #     ],
-        # ),
         dbc.Row(
             [
                 area_chart,
@@ -133,12 +125,18 @@ def update(n_clicks, startDate, endDate):
         startDate = process_time.localTime(startDate)
         endDate = process_time.localTime(endDate)
 
+        # set donut chart top num
+        mitre_topNum = 5
+        mitre_title = f'Top {mitre_topNum} MITRE ATT&CKS'
+        agent_topNum = 5
+        agent_title = f'Top {agent_topNum} agents'
+
         # get chart
-        area_fig = area.update(startDate, endDate, 'rule.level', freqs)
-        donut_fig1 = donut.update(startDate, endDate, 'rule.mitre.technique', 'Top MITRE ATT&CKS')
-        donut_fig1.update_layout(legend=dict(x=1.2)) # legend 會擋到 label, 故往右移
-        donut_fig2 = donut.update(startDate, endDate, 'agent.name', 'Top 5 agents')
-        bar_fig, _ = bar.update(startDate, endDate, freqs, ['agent.name'])
+        area_fig = area.update(startDate, endDate, 'rule.level', freqs, 'Alert level evolution')
+        donut_mitre = donut.update(startDate, endDate, 'rule.mitre.technique', mitre_title, mitre_topNum)
+        donut_mitre.update_layout(legend=dict(x=1.2)) # legend 會擋到 label, 故往右移
+        donut_agent = donut.update(startDate, endDate, 'agent.name', agent_title, agent_topNum)
+        bar_fig = bar.se_update(startDate, endDate, freqs, 'agent.name', 'Alerts evolution - Top 5 agents')
         
         # get num
         posts = get_db.connect_db()
@@ -157,7 +155,7 @@ def update(n_clicks, startDate, endDate):
                                                  {'timestamp':{"$lte":endDate}},
                                                  {'rule.groups':'authentication_success'}]})
 
-        return [area_fig, f'從 {startDate} 到 {endDate}', donut_fig1, donut_fig2, bar_fig, total, level12, fail, success]
+        return [area_fig, f'從 {startDate} 到 {endDate}', donut_mitre, donut_agent, bar_fig, total, level12, fail, success]
 
     # 已經有按過 update, 但不等於 next_click, 代表 user 正在選日期 => page info 皆不變
     elif n_clicks:

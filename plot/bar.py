@@ -1,5 +1,7 @@
 import pandas as pd
+import numpy as np
 import plotly.express as px
+import plotly.graph_objects as go
 
 from database import get_db
 from process_time import process_time
@@ -50,3 +52,53 @@ def update(startDate, endDate, freqs, selected_fields):
     fig.update_layout(hovermode="x unified")
 
     return fig, df
+
+def se_update(startDate, endDate, freqs, col_name, title):
+    # connect to database
+    posts = get_db.connect_db()
+
+    # 根據 interval 切割 startDate ~ endDate
+    intervals = list(pd.date_range(startDate, endDate, freq=freqs))
+
+    # 轉成 timestamp 格式
+    intervals = process_time.timestamp_format(intervals, endDate)
+
+    set_values = posts.distinct(col_name)
+
+    cnt = [[] for i in range(len(set_values))]
+    for i in range(len(set_values)):
+        for j in range(1, len(intervals[:-1])):
+            result = posts.count_documents({'$and':[{col_name: set_values[i]},
+                                                    {'timestamp':{"$gte":intervals[j-1]}}, 
+                                                    {'timestamp':{"$lt":intervals[j]}}]})
+            cnt[i].append(result)
+
+        # 特殊處理無法被完美切割的最後一個 interval
+        result = posts.count_documents({'$and':[{col_name: set_values[i]},
+                                                {'timestamp':{"$gt":intervals[-2]}}, 
+                                                {'timestamp':{"$lte":intervals[-1]}}]})
+        cnt[i].append(result)
+
+    interval_title = process_time.interval_title
+    data = {'time':intervals[:-1]}
+    if len(set_values) == 1:
+        data[set_values[0]] = cnt
+    else:
+        for i in range(len(set_values)):
+            data[set_values[i]] = cnt[i]
+
+    df = pd.DataFrame(data)
+    fig = px.bar(df, x='time', y=set_values, hover_data={"time":False}, title=f"<b>{title}</b>",
+                labels={'time': f'<b>timestamp per {interval_title[freqs]}</b>', 'value':'<b>Count</b>', 'variable': ''})
+    fig.update_layout(hovermode="x unified")
+    fig.update_traces(hovertemplate="%{y}")
+
+    # 將 legend 顯示在圖的右上方
+    fig.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+    return fig
