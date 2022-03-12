@@ -1,7 +1,7 @@
 import pandas as pd
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
-from dash import dcc, html, callback, dash_table
+from dash import html, callback
 
 import globals
 
@@ -35,7 +35,7 @@ for i in range(len(all_fields)):
     )
     add_collapse_combine = dbc.Row(
         [
-            add_collapse_field, 
+            add_collapse_field,
             dbc.Col(style={"width": 70}),
             add_collapse_btn,
         ]
@@ -55,7 +55,7 @@ for i in range(len(all_fields)):
     )
     del_collapse_combine = dbc.Row(
         [
-            del_collapse_field, 
+            del_collapse_field,
             dbc.Col(style={"width": 70}),
             del_collapse_btn,
         ]
@@ -82,7 +82,7 @@ def click_btn(add_clicks, del_clicks, btn_name):
         return [False, False,True, True]
 
     # add_btn 沒被按 => 則為 del_btn 被按, 或者add_btn, del_btn都沒被按(網頁初始狀態)
-    else: 
+    else:
         try:
             selected_fields.remove(all_fields[field_idx])
             print(selected_fields)

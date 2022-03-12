@@ -1,19 +1,13 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash import dcc, html, callback
+from dash import html, callback
 from dash.dependencies import Input, Output
 
 import globals
-from plot import area, donut, bar
-from database import get_db
 from process_time import process_time
-from components import datePicker, graph
+from components import datePicker, se_graph
 
 date = datePicker.se_date
-area_chart = graph.area_chart
-donut_chart1 = graph.donut_chart1
-donut_chart2 = graph.donut_chart2
-se_bar_chart = graph.se_bar_chart
 
 DISPLAY_STYLE = {
     "transition": "margin-left .5s",
@@ -78,16 +72,10 @@ layout = html.Div(
             style={'margin-top':10, 'margin-left':'10rem'},
         ),
         dbc.Row(
-            [
-                area_chart,
-                donut_chart1,
-            ], 
+            id='graph-frist-row', 
         ),
         dbc.Row(
-            [
-                donut_chart2,
-                se_bar_chart,
-            ], 
+            id='graph-second-row',
         ),
     ],
 )
@@ -95,70 +83,43 @@ layout = html.Div(
 # 按下 Update 按鈕的觸發事件
 @callback(
     [
-        Output('area_chart', 'figure'),
         Output('se-datetime-output', 'children'),
-        Output('donut_chart1', 'figure'),
-        Output('donut_chart2', 'figure'),
-        Output('se_bar_chart', 'figure'),
         Output('total', 'children'),
         Output('level12', 'children'),
         Output('fail', 'children'),
         Output('success', 'children'),
+        Output('graph-frist-row', 'children'),
+        Output('graph-second-row', 'children'),
     ],
     [
-        Input('submit_date2', 'n_clicks'),
-        Input('datetime-picker2', 'startDate'),
-        Input('datetime-picker2', 'endDate'),
+        Input('se-submit_date', 'n_clicks'),
+        Input('se-datetime-picker', 'startDate'),
+        Input('se-datetime-picker', 'endDate'),
     ]
 )
 def update(n_clicks, startDate, endDate):
+     # 修正 datetime 時差, 並 convert datetime to string
+    startDate = process_time.localTime(startDate)
+    endDate = process_time.localTime(endDate)
+
+    # 得到 interval
+    freqs = process_time.get_freq(startDate, endDate)
+
     if n_clicks == globals.update2_next_clicks:
         globals.update2_next_clicks += 1
 
         if startDate >= endDate:
-            return [{}, '起始時間必須小於結束時間', {}, {}, {}, dash.no_update, dash.no_update, dash.no_update, dash.no_update]
+            status = [dash.no_update for i in range(6)]
+            status.insert(0, '起始時間必須小於結束時間')
+            return status
 
-        # 得到 interval
-        freqs = process_time.get_freq(startDate, endDate)
-
-        # 修正 datetime 時差, 並 convert datetime to string
-        startDate = process_time.localTime(startDate)
-        endDate = process_time.localTime(endDate)
-
-        # set donut chart top num
-        mitre_topNum = 5
-        mitre_title = f'Top {mitre_topNum} MITRE ATT&CKS'
-        agent_topNum = 5
-        agent_title = f'Top {agent_topNum} agents'
-
-        # get chart
-        area_fig = area.update(startDate, endDate, 'rule.level', freqs, 'Alert level evolution')
-        donut_mitre = donut.update(startDate, endDate, 'rule.mitre.technique', mitre_title, mitre_topNum)
-        donut_mitre.update_layout(legend=dict(x=1.2)) # legend 會擋到 label, 故往右移
-        donut_agent = donut.update(startDate, endDate, 'agent.name', agent_title, agent_topNum)
-        bar_fig = bar.se_update(startDate, endDate, freqs, 'agent.name', 'Alerts evolution - Top 5 agents')
+        # update graph
+        return se_graph.update_graph(startDate, endDate, freqs)
         
-        # get num
-        posts = get_db.connect_db()
-        total = posts.count_documents({'$and':[{'timestamp':{"$gte":startDate}},
-                                               {'timestamp':{"$lte":endDate}}]})
 
-        level12 = posts.count_documents({'$and':[{'timestamp': {"$gte":startDate}},
-                                                 {'timestamp': {"$lte":endDate}},
-                                                 {'rule.level':{"$gte":12}}]})
+    elif globals.initalization == 1:
+        # initialize graph
+        globals.initalization = 0
+        return se_graph.update_graph(startDate, endDate, freqs)
 
-        fail = posts.count_documents({'$and':[{'timestamp':{"$gte":startDate}},
-                                              {'timestamp':{"$lte":endDate}},
-                                              {'rule.groups':'authentication_failed'}]})
-
-        success = posts.count_documents({'$and':[{'timestamp':{"$gte":startDate}},
-                                                 {'timestamp':{"$lte":endDate}},
-                                                 {'rule.groups':'authentication_success'}]})
-
-        return [area_fig, f'從 {startDate} 到 {endDate}', donut_mitre, donut_agent, bar_fig, total, level12, fail, success]
-
-    # 已經有按過 update, 但不等於 next_click, 代表 user 正在選日期 => page info 皆不變
-    elif n_clicks:
-        return [dash.no_update for i in range(9)]
-
-    return [{}, '請選取時間', {}, {}, {}, dash.no_update, dash.no_update, dash.no_update, dash.no_update]
+    return [dash.no_update for i in range(7)]

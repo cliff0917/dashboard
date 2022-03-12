@@ -11,7 +11,7 @@ from dash.dependencies import Input, Output
 
 import globals
 from database import create_db
-from components import navbar, menubar, showData
+from components import navbar, menubar
 from pages import home, discover, security_events, non_exist
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
@@ -19,7 +19,6 @@ app = dash.Dash(__name__, suppress_callback_exceptions=True)
 # components
 navbar = navbar.navbar
 menu_bar = menubar.menu_bar
-show_data = showData.show_data
 url = dcc.Location(id="url")
 content = html.Div(id='content')
 

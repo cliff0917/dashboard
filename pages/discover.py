@@ -1,21 +1,15 @@
 import dash
-import pandas as pd
 import dash_bootstrap_components as dbc
-from dash import dcc, html, callback
+from dash import html, callback
 from dash.dependencies import Input, Output
 
 import globals
-from plot import bar
 from process_time import process_time
-from components import fields, showData, datePicker, collapse_item
+from components import fields, datePicker, discover_graph
 
 # components
-show_data = showData.show_data
 date = datePicker.date
-
-fields_bar = html.Div(
-    fields.fields_bar,
-)
+fields_bar = html.Div(fields.fields_bar)
 
 DISPLAY_STYLE = {
     "transition": "margin-left .5s",
@@ -37,7 +31,10 @@ layout = html.Div(
                 dbc.Col(
                     [
                         date,
-                        show_data,
+                        # show_data,
+                        dbc.Col(
+                            id='graph-and-table',
+                        )
                     ],
                     style=DISPLAY_STYLE,
                 ), 
@@ -49,13 +46,9 @@ layout = html.Div(
 # 按下 Update 按鈕的觸發事件
 @callback(
     [
-        Output('bar_chart', 'figure'),
         Output('datetime-output', 'children'),
         Output('dataNum', 'children'),
-        Output('table', 'data'),
-        Output('table', 'columns'),
-        Output("table", "tooltip_data"),
-        Output("table", "tooltip_header"),
+        Output("graph-and-table", "children"),
     ],
     [
         Input('submit_date', 'n_clicks'),
@@ -64,36 +57,25 @@ layout = html.Div(
     ]
 )
 def update(n_clicks, startDate, endDate):
+    # 修正 datetime 時差, 並 convert datetime to string
+    startDate = process_time.localTime(startDate)
+    endDate = process_time.localTime(endDate)
+
+    # 得到 interval
+    freqs = process_time.get_freq(startDate, endDate)
+
     if n_clicks == globals.update_next_clicks:
         globals.update_next_clicks += 1
+
         if startDate >= endDate:
-            return [{}, '起始時間必須小於結束時間', '', pd.DataFrame().to_dict('record'), [], dash.no_update, dash.no_update]
+            return ['起始時間必須小於結束時間', dash.no_update, []]
 
-        # 修正 datetime 時差, 並 convert datetime to string
-        startDate = process_time.localTime(startDate)
-        endDate = process_time.localTime(endDate)
+        # update display
+        return discover_graph.update_display(startDate, endDate, freqs)
+    
+    elif globals.initalization == 1:
+        # initialize display
+        globals.initalization = 0
+        return discover_graph.update_display(startDate, endDate, freqs)
 
-        # 計算每個 interval 中的 data 個數
-        freqs = process_time.get_freq(startDate, endDate)
-        bar_fig, df = bar.update(startDate, endDate, freqs, collapse_item.selected_fields)
-        columns = [{'name': column, 'id': column} for column in df.columns]
-
-        tooltip_data=[
-            {
-                column: {'value': f'{column}\n\n{value}', 'type': 'markdown'}
-                for column, value in row.items()
-            } for row in df.to_dict('records')
-        ]
-        tooltip_header = {i: i for i in df.columns}
-
-        # 解決 data table 中 list 的顯示問題, 將 df 中的 list 轉成 string 用逗號隔開, 並串接在一起
-        for column in list(df.columns):
-            df[column] = [', '.join(map(str, l)) if isinstance (l, list) else l for l in df[column]]
-
-        return [bar_fig, f'從 {startDate} 到 {endDate}', f'{len(df)} hits', df.to_dict('record'), columns, tooltip_data, tooltip_header]
-
-    # 已經有按過 update, 但不等於 next_click, 代表 user 正在選日期 => page info 皆不變
-    elif n_clicks:
-        return [dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update]
-
-    return [{}, '請先選擇fields(不選的話預設為全部的fields), 再選時間', '0 hits', pd.DataFrame().to_dict('record'), [], dash.no_update, dash.no_update]
+    return [dash.no_update for i in range(3)]

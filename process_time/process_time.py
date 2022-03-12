@@ -1,9 +1,9 @@
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 
 interval_title={'1s': 'second', '5s': '5 seconds', '10s': '10 seconds', '30s': '30 seconds',
-                '1min': 'minute', '5min': '5 minutes', '10min': '10 minutes','30min': '30 minutes', 
-                '1H': 'hour', '3H': '3 hours', '12H': '12 hours', 
+                '1min': 'minute', '5min': '5 minutes', '10min': '10 minutes','30min': '30 minutes',
+                '1H': 'hour', '3H': '3 hours', '12H': '12 hours',
                 '1D': 'day', '7D': '7 days', '30D': '30days'}
 
 # 修正8小時時差並轉成string
@@ -23,7 +23,7 @@ def timestamp_format(intervals, endDate):
 
     # 將 endDate 轉成 timestamp 格式, 因為 startDate, endDate 的時間差可能無法被 freq 整除, 故要特殊處理
     # datetime.now 和 dash_datetimepicker 的時間格式不同, try 是特殊處理 datetime.now 的, 因為它中間是用空白隔開
-    # 而 datetimepicker 本身就是 timestamp 格式 
+    # 而 datetimepicker 本身就是 timestamp 格式
     try:
         date, day_time  = endDate.split(' ')
         endDate = date + 'T' + day_time
@@ -65,7 +65,7 @@ def get_freq(startDate, endDate):
     elif days < 2:  #  17 <= x < 48 (hours)
         freqs = '30min'
     elif days >=2 and days < 5:
-        freqs = '1H' 
+        freqs = '1H'
     elif days >= 5 and days < 12:
         freqs = '3H'
     elif days >= 12 and days < 50:
@@ -76,5 +76,5 @@ def get_freq(startDate, endDate):
         freqs = '7D'
     else:  # x > 3 (years)
         freqs = '30D'
-    print(freqs)
+    # print(freqs)
     return freqs

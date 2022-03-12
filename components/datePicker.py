@@ -1,15 +1,8 @@
-import dash
-import pandas as pd
 import dash_datetimepicker
 import dash_bootstrap_components as dbc
-from dash import html, callback
-from dash.dependencies import Input, Output
+from dash import html
 
-from components import table, graph, collapse_item
-
-table = table.table
-bar_chart = graph.bar_chart
-
+# discover 的 date_picker
 date_picker = dbc.Row(
     [
         dash_datetimepicker.DashDatetimepicker(id="datetime-picker"),
@@ -19,8 +12,7 @@ date_picker = dbc.Row(
 )
 
 datetime_output = html.H6(id='datetime-output', style={'margin-top': '20px', 'margin-left': '7px',})
-hitNum = html.H3(style={'textAlign': 'center'}, id='dataNum')
-se_datetime_output = html.H6(id='se-datetime-output', style={'margin-top': '20px', 'margin-left': '7px'})
+hitNum = html.H1('--', style={'textAlign': 'center'}, id='dataNum')
 
 date = dbc.Col(
     [
@@ -28,21 +20,22 @@ date = dbc.Col(
         datetime_output,
         hitNum,
     ],
-    id='date',
 )
 
-# security events 簡稱 se
+# security events 的 date_picker (security events 簡稱 se)
 se_date_picker = dbc.Row(
     [
-        dash_datetimepicker.DashDatetimepicker(id="datetime-picker2"),
-        html.Button('Update', id='submit_date2', style={'margin-left':'1rem', 'font-size': '15px', 'height': 37}, n_clicks=0),
+        dash_datetimepicker.DashDatetimepicker(id="se-datetime-picker"),
+        html.Button('Update', id='se-submit_date', style={'margin-left':'1rem', 'font-size': '15px', 'height': 37}, n_clicks=0),
     ],
     style={'margin-left':'5px'}
 )
+
+se_datetime_output = html.H6('請選取時間', id='se-datetime-output', style={'margin-top': '20px', 'margin-left': '7px'})
+
 se_date = dbc.Col(
     [
         se_date_picker,
         se_datetime_output,
     ],
-    id='date2',
 )

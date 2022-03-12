@@ -1,9 +1,7 @@
 import os
 import json
 import glob
-import pandas as pd
 import pickle as pkl
-from pymongo import MongoClient
 
 def record_last(last_date_info):
     file = open('last_date.pkl', 'wb')
@@ -20,11 +18,11 @@ def createDB(database, dir_path, sudoPassword):
     # f sting 中用兩個{}, 來顯示{}
     unzip_cmd = f"echo {sudoPassword} | sudo -S find {dir_path} -name '*.json.gz' -exec gunzip {{}} +"
     os.system(unzip_cmd)
-    
+
     # 找出年份(2000~2099)的資料夾, 並由小到大排序
     targetPattern = "20[0-9][0-9]"
     years = sorted(glob.glob(f'{dir_path}/{targetPattern}'))
-    
+
     months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
@@ -56,11 +54,11 @@ def createDB(database, dir_path, sudoPassword):
                     try:
                         json_lines = [json.loads(line) for line in lines]
                         num += len(lines)
-                    except: 
+                    except:
                         error_file = json_files[i]
                     data += json_lines
                     # print(f'{json_file} 有 {len(lines)} 筆資料')
-            except: 
+            except:
                 continue
     try:
         database.insert_many(data) # insert data into mongoDB

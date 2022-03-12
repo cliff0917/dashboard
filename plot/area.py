@@ -15,22 +15,23 @@ def update(startDate, endDate, col_name, freqs, title):
     # get the set of col_values
     set_values = posts.distinct('rule.level')
 
+    # 根據 interval 切割 startDate ~ endDate
     intervals = list(pd.date_range(startDate, endDate, freq=freqs))
     intervals = process_time.timestamp_format(intervals, endDate) # 轉成 timestamp 格式
 
     cnt = [[] for i in range(len(set_values))]
     dic = {set_values[i]:i for i in range(len(set_values))}
-    
+
     for i in range(1, len(intervals[:-1])):
         for value in set_values:
-            result = posts.count_documents({'$and':[{'timestamp':{"$gte":intervals[i-1]}}, 
-                                                    {'timestamp':{"$lt":intervals[i]}}, 
+            result = posts.count_documents({'$and':[{'timestamp':{"$gte":intervals[i-1]}},
+                                                    {'timestamp':{"$lt":intervals[i]}},
                                                     {col_name:value}]})
             cnt[dic[value]].append(result)
 
     for value in set_values:
-        result = posts.count_documents({'$and':[{'timestamp':{"$gt":intervals[-2]}}, 
-                                                {'timestamp':{"$lte":intervals[-1]}}, 
+        result = posts.count_documents({'$and':[{'timestamp':{"$gt":intervals[-2]}},
+                                                {'timestamp':{"$lte":intervals[-1]}},
                                                 {col_name:value}]})
         cnt[dic[value]].append(result)
 

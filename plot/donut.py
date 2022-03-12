@@ -11,11 +11,18 @@ def calculate_cnt(startDate, endDate, col_name):
 
     cnt = []
     for value in set_values:
-        result = posts.count_documents({'$and':[{col_name:{"$in": [value]}}, 
-                                                {'timestamp':{"$gte":startDate}}, 
+        result = posts.count_documents({'$and':[{col_name:{"$in": [value]}},
+                                                {'timestamp':{"$gte":startDate}},
                                                 {'timestamp':{"$lte":endDate}}]})
         cnt.append(result)
     return cnt, set_values
+
+def get_top_n(non_zero_cnt, non_zero_col, top_num):
+    if len(non_zero_col) >= top_num:
+        non_zero_cnt, non_zero_col = (list(t) for t in zip(*sorted(zip(non_zero_cnt, non_zero_col), reverse=True)))
+        non_zero_cnt = non_zero_cnt[:top_num]
+        non_zero_col = non_zero_col[:top_num]
+    return non_zero_cnt, non_zero_col
 
 def update(startDate, endDate, col_name, title, top_num):
     cnt, set_values = calculate_cnt(startDate, endDate, col_name)
@@ -28,10 +35,8 @@ def update(startDate, endDate, col_name, title, top_num):
             non_zero_cnt.append(cnt[i])
             non_zero_col.append(set_values[i])
 
-    if len(non_zero_cnt) >= top_num:
-        non_zero_cnt, non_zero_col = (list(t) for t in zip(*sorted(zip(non_zero_cnt, non_zero_col), reverse=True)))
-        non_zero_cnt = non_zero_cnt[:top_num]
-        non_zero_col = non_zero_col[:top_num]
+    # 排序並取前 top_num 個
+    non_zero_cnt, non_zero_col = get_top_n(non_zero_cnt, non_zero_col, top_num)
 
     fig = go.Figure(go.Pie(
         name = col_name,

@@ -1,8 +1,6 @@
 from dash import html
 import dash_bootstrap_components as dbc
 
-from components import datePicker
-
 pages = ['/Home', '/Discover', '/Security-Events']
 LINK_STYLE = {'color': 'blue', 'text-decoration': 'none', 'margin-right':'2rem', 'fontSize':30}
 
