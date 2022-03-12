@@ -77,7 +77,8 @@ def update_db(posts, dir_path):
 
     # print('-' * 25)
     if data == []:
-        print('沒有要新增的資料')
+        pass
+        # print('沒有要新增的資料')
     else:
         posts.insert_many(data) # insert data into mongoDB
         print(f'新增{len(data)}筆資料')
