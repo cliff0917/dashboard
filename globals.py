@@ -1,6 +1,6 @@
 from database import get_db
 
-def initialize(): 
+def initialize():
     global posts, update_next_clicks, update2_next_clicks, initalization
     # 需要 sudo 密碼以存取檔案
     sudoPassword = 'uscc' # 0

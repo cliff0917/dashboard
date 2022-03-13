@@ -67,6 +67,7 @@ for i in range(len(all_fields)):
 #------------------------------------------
 global selected_fields, add_next_click
 selected_fields = []
+timestamp_auto_insert = 0
 add_next_click = [1 for i in range(len(all_fields))]
 
 def click_btn(add_clicks, del_clicks, btn_name):
