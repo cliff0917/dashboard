@@ -1,6 +1,6 @@
 import dash_datetimepicker
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import dcc, html
 
 # discover 的 date_picker
 date_picker = dbc.Row(
@@ -11,8 +11,14 @@ date_picker = dbc.Row(
     style={'margin-left':'5px'}
 )
 
-datetime_output = html.H6(id='datetime-output', style={'margin-top': '20px', 'margin-left': '7px',})
-hitNum = html.H1('載入資料中...', style={'textAlign': 'center'}, id='dataNum')
+datetime_output = html.H6(id='datetime-output', style={'margin-top': '20px', 'margin-left': '7px'})
+hitNum = html.H1(
+    [
+        '載入資料中',
+        dbc.Spinner(size="lg", spinner_style={'margin-left': '15px', 'width': '40px', 'height': '40px'}),
+    ],
+    style={'textAlign': 'center'}, id='dataNum'
+)
 
 date = dbc.Col(
     [

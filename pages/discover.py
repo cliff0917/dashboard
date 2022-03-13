@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output
 
 import globals
 from process_time import process_time
-from components import fields, datePicker, discover_graph
+from components import fields, datePicker, discover_display
 
 # components
 date = datePicker.date
@@ -77,11 +77,11 @@ def update(n_clicks, startDate, endDate):
             return ['起始時間必須小於結束時間', dash.no_update, []]
 
         # update display
-        return discover_graph.update_display(startDate, endDate, freqs)
+        return discover_display.update(startDate, endDate, freqs)
 
     elif globals.initalization == 1:
         # initialize display
         globals.initalization = 0
-        return discover_graph.update_display(startDate, endDate, freqs)
+        return discover_display.update(startDate, endDate, freqs)
 
     return [dash.no_update for i in range(3)]

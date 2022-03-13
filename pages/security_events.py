@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output
 
 import globals
 from process_time import process_time
-from components import datePicker, se_graph
+from components import datePicker, se_display
 
 date = datePicker.se_date
 
@@ -16,14 +16,14 @@ DISPLAY_STYLE = {
     "padding": "1rem 1rem",
     "background-color": "#f8f9fa",
     'fontSize': 10,
-    'zIndex':1,
-    'border':'1px black solid',
-    'zIndex':2,
+    'zIndex': 1,
+    'border': '1px black solid',
+    'zIndex': 2,
 }
 
 COL_STYLE = {
-    'fontSize':20,
-    'margin-left':155,
+   'width': 3,
+   'textAlign': 'center',
 }
 
 layout = html.Div(
@@ -43,33 +43,33 @@ layout = html.Div(
                 dbc.Col(
                     [
                         html.H4('Total'),
-                        html.H4('--', style={'fontSize':30, 'color':'blue', 'align':'center'}, id='total'),
+                        html.H4('--', style={'fontSize':30, 'color':'blue'}, id='total'),
                     ],
-                    style={'width':3},
+                    style=COL_STYLE,
                 ),
                 dbc.Col(
                     [
                          html.H4('Level 12 or above alerts'),
-                         html.H4('--', style={'fontSize':30, 'color':'red', 'align':'center'}, id='level12'),
+                         html.H4('--', style={'fontSize':30, 'color':'red'}, id='level12'),
                     ],
-                    style={'width':3},
+                    style=COL_STYLE,
                 ),
                 dbc.Col(
                     [
                         html.H4('Authentication failure'),
-                        html.H4('--', style={'fontSize':30, 'color':'red', 'align':'center'}, id='fail'),
+                        html.H4('--', style={'fontSize':30, 'color':'red'}, id='fail'),
                     ],
-                    style={'width':3},
+                    style=COL_STYLE,
                 ),
                 dbc.Col(
                     [
                         html.H4('Authentication success'),
-                        html.H4('--', style={'fontSize':30, 'color':'green', 'align':'center'}, id='success'),
+                        html.H4('--', style={'fontSize':30, 'color':'green'}, id='success'),
                     ],
-                    style={'width':3},
+                    style=COL_STYLE,
                 ),
             ],
-            style={'margin-top':10, 'margin-left':'10rem'},
+            style={'margin-top':10},
         ),
         dcc.Loading(
             [
@@ -119,12 +119,12 @@ def update(n_clicks, startDate, endDate):
             return status
 
         # update graph
-        return se_graph.update_graph(startDate, endDate, freqs)
+        return se_display.update(startDate, endDate, freqs)
 
 
     elif globals.initalization == 1:
         # initialize graph
         globals.initalization = 0
-        return se_graph.update_graph(startDate, endDate, freqs)
+        return se_display.update(startDate, endDate, freqs)
 
     return [dash.no_update for i in range(7)]

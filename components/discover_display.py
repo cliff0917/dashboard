@@ -1,25 +1,27 @@
 from dash import dcc, html,  dash_table
 
-import globals
 from plot import bar
-from components import collapse_item, se_graph
+from components.se_display import CONFIG
+from components.collapse_item import selected_fields, timestamp_auto_insert
 
-CONFIG = se_graph.CONFIG
+global CONFIG
 BAR_STYLE = {'border':'1px black solid', 'zIndex':1}
 
-def update_display(startDate, endDate, freqs):
+def update(startDate, endDate, freqs):
+    global selected_fields, timestamp_auto_insert, CONFIG
+
     # 若所選 fields 中沒有 timestamp 則自動加入 timestamp 在最前面
-    if len(collapse_item.selected_fields) != 0 and 'timestamp' not in collapse_item.selected_fields:
-        collapse_item.selected_fields.insert(0, 'timestamp')
-        collapse_item.timestamp_auto_insert = 1
+    if len(selected_fields) != 0 and 'timestamp' not in selected_fields:
+        selected_fields.insert(0, 'timestamp')
+        timestamp_auto_insert = 1
 
     # 若 fields 中只剩下 timestamp, 且 timestamp 是自動 insert 的 => 刪除 timestamp, 讓 fields 為空 (data table 會顯示所有 fields)
-    elif collapse_item.selected_fields == ['timestamp'] and collapse_item.timestamp_auto_insert == 1:
-        collapse_item.selected_fields.remove('timestamp')
-        collapse_item.timestamp_auto_insert = 0
+    elif selected_fields == ['timestamp'] and timestamp_auto_insert == 1:
+        selected_fields.remove('timestamp')
+        timestamp_auto_insert = 0
 
     # 根據 selected_fields 篩選資料(若 fields 為空, table 顯示所有 fields)
-    bar_fig, df = bar.update(startDate, endDate, freqs, collapse_item.selected_fields)
+    bar_fig, df = bar.update(startDate, endDate, freqs, selected_fields)
 
     # 若無資料
     if len(df) == 0:
@@ -56,6 +58,7 @@ def update_display(startDate, endDate, freqs):
             'textOverflow': 'ellipsis',
             'minWidth': 240,
             'maxWidth': 240,
+            'whiteSpace': 'pre-line',
         },
         fixed_rows={
             'headers': True,
@@ -84,6 +87,7 @@ def update_display(startDate, endDate, freqs):
             } for row in df.to_dict('records')
         ],
         tooltip_header = {i: i for i in df.columns},
+        # page_size=100, # 預設一頁有250列
     )
 
     display = [

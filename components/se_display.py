@@ -48,7 +48,7 @@ SECOND_STYLE = {
     'zIndex':1,
 }
 
-def update_graph(startDate, endDate, freqs):
+def update(startDate, endDate, freqs):
     # get chart
     area_fig = area.update(startDate, endDate, 'rule.level', freqs, 'Alert level evolution')
 
@@ -59,7 +59,7 @@ def update_graph(startDate, endDate, freqs):
         msg = html.H1('此區間無資料', style={'fontSize':40, 'margin-left':850, 'margin-top':100})
         no_data += [msg, []]
         return no_data
-    
+
     # 若有資料
     donut_mitre_fig = donut.update(startDate, endDate, 'rule.mitre.technique', mitre_title, mitre_topNum)
     donut_mitre_fig.update_layout(legend=dict(x=1.2)) # legend 會擋到 label, 故往右移
@@ -92,7 +92,7 @@ def update_graph(startDate, endDate, freqs):
 
     first_row = [area_graph, donut_mitre_graph]
     second_row = [donut_agent_graph, bar_agent_graph]
-    
+
     # get num
     posts = get_db.connect_db()
     total = posts.count_documents({'$and':[{'timestamp': {"$gte":startDate}},
