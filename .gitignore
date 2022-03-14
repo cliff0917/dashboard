@@ -1,7 +1,6 @@
 *.ipynb
 tmp.py
 sudocmd.py
-app.py
 pages/page2.py
 test.py
 assets/js/

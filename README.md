@@ -7,7 +7,7 @@ conda create -y -n dashboard python=3.7
 conda activate dashboard
 cd dashboard
 pip install -r requirements.txt
-python main.py
+python app.py
 ```
 
 ## 常見問題

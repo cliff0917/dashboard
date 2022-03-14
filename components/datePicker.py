@@ -1,6 +1,6 @@
 import dash_datetimepicker
 import dash_bootstrap_components as dbc
-from dash import dcc, html
+from dash import html
 
 # discover 的 date_picker
 date_picker = dbc.Row(

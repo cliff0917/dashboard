@@ -103,12 +103,8 @@ layout = html.Div(
     ]
 )
 def update(n_clicks, startDate, endDate):
-     # 修正 datetime 時差, 並 convert datetime to string
-    startDate = process_time.localTime(startDate)
-    endDate = process_time.localTime(endDate)
-
-    # 得到 interval
-    freqs = process_time.get_freq(startDate, endDate)
+    # 修正 datetime 時差, 並得到 interval
+    startDate, endDate, freqs = process_time.get_freq(startDate, endDate)
 
     if n_clicks == globals.update2_next_clicks:
         globals.update2_next_clicks += 1
@@ -118,12 +114,12 @@ def update(n_clicks, startDate, endDate):
             status.insert(0, '起始時間必須小於結束時間')
             return status
 
-        # update graph
+        # update display
         return se_display.update(startDate, endDate, freqs)
 
 
     elif globals.initalization == 1:
-        # initialize graph
+        # initialize display
         globals.initalization = 0
         return se_display.update(startDate, endDate, freqs)
 

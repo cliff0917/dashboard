@@ -40,11 +40,16 @@ def string_to_time(time):
     return time
 
 def get_freq(startDate, endDate):
-    startDate = string_to_time(startDate)
-    endDate = string_to_time(endDate)
+    # 修正 datetime 時差, 並 convert datetime to string
+    startDate = localTime(startDate)
+    endDate = localTime(endDate)
 
-    days = (endDate-startDate).days
-    seconds = (endDate-startDate).seconds
+    # string -> datetime
+    start = string_to_time(startDate)
+    end = string_to_time(endDate)
+
+    days = (end-start).days
+    seconds = (end-start).seconds
     if days == 0:
         if seconds < 5*60: # x <= 1 (minutes)
             freqs = '1s'
@@ -77,4 +82,4 @@ def get_freq(startDate, endDate):
     else:  # x > 3 (years)
         freqs = '30D'
     # print(freqs)
-    return freqs
+    return startDate, endDate, freqs

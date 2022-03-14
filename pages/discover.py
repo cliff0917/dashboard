@@ -63,18 +63,14 @@ layout = html.Div(
     ]
 )
 def update(n_clicks, startDate, endDate):
-    # 修正 datetime 時差, 並 convert datetime to string
-    startDate = process_time.localTime(startDate)
-    endDate = process_time.localTime(endDate)
-
-    # 得到 interval
-    freqs = process_time.get_freq(startDate, endDate)
+    # 修正 datetime 時差, 並得到 interval
+    startDate, endDate, freqs = process_time.get_freq(startDate, endDate)
 
     if n_clicks == globals.update_next_clicks:
         globals.update_next_clicks += 1
 
         if startDate >= endDate:
-            return ['起始時間必須小於結束時間', dash.no_update, []]
+            return ['起始時間必須小於結束時間', '', []]
 
         # update display
         return discover_display.update(startDate, endDate, freqs)

@@ -5,12 +5,10 @@ warnings.filterwarnings("ignore", category=Warning)
 import os
 import dash
 import webbrowser
-import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output
 
 import globals
-from database import create_db
 from components import navbar, menubar
 from pages import home, discover, security_events, non_exist
 
@@ -58,7 +56,7 @@ def display_page(pathname):
     return non_exist.layout  # 若非以上路徑, 則 return 404 message
 
 if __name__ == '__main__':
-    app.run_server(debug=True, dev_tools_props_check=False)
+    app.run_server(debug=True, dev_tools_props_check=False) # debug mode
     # pid = os.fork()
     # if pid != 0:
     #     app.run_server()
