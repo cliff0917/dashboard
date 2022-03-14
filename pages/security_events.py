@@ -80,7 +80,9 @@ layout = html.Div(
                     id='graph-second-row',
                 ),
             ],
-            fullscreen=True,
+            # style={'height': 200},
+            id='se-loading',
+            # fullscreen=True,
         ),
     ],
 )
@@ -95,6 +97,7 @@ layout = html.Div(
         Output('success', 'children'),
         Output('graph-frist-row', 'children'),
         Output('graph-second-row', 'children'),
+        Output('se-loading', 'style'),
     ],
     [
         Input('se-submit_date', 'n_clicks'),

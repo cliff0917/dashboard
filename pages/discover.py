@@ -1,11 +1,12 @@
 import dash
+import itertools
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
 
 import globals
 from process_time import process_time
-from components import fields, datePicker, discover_display
+from components import fields, datePicker, discover_display, collapse_item
 
 # components
 date = datePicker.date
@@ -39,7 +40,7 @@ layout = html.Div(
                                     dbc.Col(id='graph-and-table'),
                                 ],
                             ),
-                            fullscreen=True,
+                            # fullscreen=True,
                         ),
                     ],
                     style=DISPLAY_STYLE,
@@ -48,6 +49,8 @@ layout = html.Div(
         ),
     ],
 )
+
+fields_btn = [Input(f'{i}', 'is_open') for i in range(len(collapse_item.add_collapse_combines))]
 
 # 按下 Update 按鈕的觸發事件
 @callback(
@@ -58,13 +61,14 @@ layout = html.Div(
     ],
     [
         Input('submit_date', 'n_clicks'),
+        fields_btn,
     ],
     [
         State('datetime-picker', 'startDate'),
         State('datetime-picker', 'endDate'),
     ]
 )
-def update(n_clicks, startDate, endDate):
+def update(n_clicks, fields_btn, startDate, endDate):
     # 修正 datetime 時差, 並得到 interval
     startDate, endDate, freqs = process_time.get_freq(startDate, endDate)
 
@@ -80,6 +84,10 @@ def update(n_clicks, startDate, endDate):
     elif globals.initalization == 1:
         # initialize display
         globals.initalization = 0
+        return discover_display.update(startDate, endDate, freqs)
+
+    else:
+        # 利用 fields_btn 來動態 update display
         return discover_display.update(startDate, endDate, freqs)
 
     return [dash.no_update for i in range(3)]
