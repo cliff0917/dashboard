@@ -114,11 +114,6 @@ def update(n_clicks, startDate, endDate):
     if n_clicks == globals.update2_next_clicks:
         globals.update2_next_clicks += 1
 
-        if startDate >= endDate:
-            status = [dash.no_update for i in range(6)]
-            status.insert(0, '起始時間必須小於結束時間')
-            return status
-
         # update display
         return se_display.update(startDate, endDate, freqs)
 

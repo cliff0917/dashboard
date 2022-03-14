@@ -36,7 +36,7 @@ se_date_picker = dbc.Row(
     style={'margin-left':'5px'}
 )
 
-se_datetime_output = html.H6('請選取時間', id='se-datetime-output', style={'margin-top': '20px', 'margin-left': '7px'})
+se_datetime_output = html.H6('', id='se-datetime-output', style={'margin-top': '20px', 'margin-left': '7px'})
 
 se_date = dbc.Col(
     [

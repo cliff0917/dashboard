@@ -1,5 +1,4 @@
 import dash
-import itertools
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
@@ -74,9 +73,6 @@ def update(n_clicks, fields_btn, startDate, endDate):
 
     if n_clicks == globals.update_next_clicks:
         globals.update_next_clicks += 1
-
-        if startDate >= endDate:
-            return ['起始時間必須小於結束時間', '', []]
 
         # update display
         return discover_display.update(startDate, endDate, freqs)
