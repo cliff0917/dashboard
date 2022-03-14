@@ -48,7 +48,7 @@ def update(startDate, endDate, freqs):
     table = dash_table.DataTable(
         data=df.to_dict('records'),
         columns=[{'name': column, 'id': column} for column in df.columns],
-        # virtualization=True,
+        virtualization=True,
         sort_action='custom',
         sort_mode='multi',
         # 要 minWidth, maxWidth 同時設一樣, 再搭配 fixed_rows, 才能 fixed header
@@ -87,10 +87,10 @@ def update(startDate, endDate, freqs):
             } for row in df.to_dict('records')
         ],
         tooltip_header={i: i for i in df.columns},
-        # style_table={
-        #     'height': 700,
-        #     'overflowY': 'auto',
-        # },
+        style_table={
+            'height': 700,
+            'overflowY': 'auto',
+        },
         # page_size=100, # 預設一頁有250列
     )
 

@@ -1,7 +1,7 @@
 import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 
 import globals
 from process_time import process_time
@@ -98,8 +98,10 @@ layout = html.Div(
     ],
     [
         Input('se-submit_date', 'n_clicks'),
-        Input('se-datetime-picker', 'startDate'),
-        Input('se-datetime-picker', 'endDate'),
+    ],
+    [
+        State('se-datetime-picker', 'startDate'),
+        State('se-datetime-picker', 'endDate'),
     ]
 )
 def update(n_clicks, startDate, endDate):

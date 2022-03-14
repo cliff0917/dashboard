@@ -12,7 +12,7 @@ def update(startDate, endDate, freqs, selected_fields):
     # 根據 interval 切割 startDate ~ endDate
     intervals = list(pd.date_range(startDate, endDate, freq=freqs))
 
-    # 將 selected_fields 做標記, 等等會送入 database 做查詢(若 fields 為空, table 顯示所有 fields
+    # 將 selected_fields 做標記, 等等會送入 database 做查詢(若 fields 為空, table 顯示所有 fields)
     # => 因為 display_cols = {'_id':0}, 會 query 除了 '_id' 以外的所有 cols
     # query 負責 drop database 中任何 selected_fields 值為 null 的 row , display_cols 決定 data table 顯示哪些 column
     query = {}
