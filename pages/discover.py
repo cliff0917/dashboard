@@ -39,7 +39,6 @@ layout = html.Div(
                                     dbc.Col(id='graph-and-table'),
                                 ],
                             ),
-                            # fullscreen=True,
                         ),
                     ],
                     style=DISPLAY_STYLE,
@@ -51,7 +50,7 @@ layout = html.Div(
 
 fields_btn = [Input(f'{i}', 'is_open') for i in range(len(collapse_item.add_collapse_combines))]
 
-# 按下 Update 按鈕的觸發事件
+# 初始化 display or 按下 Update 按鈕的觸發事件 or 利用 fields_btn 來動態 update display
 @callback(
     [
         Output('datetime-output', 'children'),
@@ -70,20 +69,4 @@ fields_btn = [Input(f'{i}', 'is_open') for i in range(len(collapse_item.add_coll
 def update(n_clicks, fields_btn, startDate, endDate):
     # 修正 datetime 時差, 並得到 interval
     startDate, endDate, freqs = process_time.get_freq(startDate, endDate)
-
-    if n_clicks == globals.update_next_clicks:
-        globals.update_next_clicks += 1
-
-        # update display
-        return discover_display.update(startDate, endDate, freqs)
-
-    elif globals.initalization == 1:
-        # initialize display
-        globals.initalization = 0
-        return discover_display.update(startDate, endDate, freqs)
-
-    else:
-        # 利用 fields_btn 來動態 update display
-        return discover_display.update(startDate, endDate, freqs)
-
-    return [dash.no_update for i in range(3)]
+    return discover_display.update(startDate, endDate, freqs)

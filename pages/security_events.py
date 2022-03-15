@@ -80,14 +80,12 @@ layout = html.Div(
                     id='graph-second-row',
                 ),
             ],
-            # style={'height': 200},
             id='se-loading',
-            # fullscreen=True,
         ),
     ],
 )
 
-# 按下 Update 按鈕的觸發事件
+# 初始化 display or 按下 Update 按鈕的觸發事件
 @callback(
     [
         Output('se-datetime-output', 'children'),
@@ -110,17 +108,4 @@ layout = html.Div(
 def update(n_clicks, startDate, endDate):
     # 修正 datetime 時差, 並得到 interval
     startDate, endDate, freqs = process_time.get_freq(startDate, endDate)
-
-    if n_clicks == globals.update2_next_clicks:
-        globals.update2_next_clicks += 1
-
-        # update display
-        return se_display.update(startDate, endDate, freqs)
-
-
-    elif globals.initalization == 1:
-        # initialize display
-        globals.initalization = 0
-        return se_display.update(startDate, endDate, freqs)
-
-    return [dash.no_update for i in range(7)]
+    return se_display.update(startDate, endDate, freqs)
