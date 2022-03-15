@@ -9,10 +9,6 @@ global CONFIG
 BAR_STYLE = {'border':'1px black solid', 'zIndex':1}
 
 def update(startDate, endDate, freqs):
-
-    if startDate >= endDate:
-        return ['起始時間必須小於結束時間, 請重新選擇時間', '', []]
-
     global selected_fields, timestamp_auto_insert, CONFIG
 
     # 若所選 fields 中沒有 timestamp 則自動加入 timestamp 在最前面

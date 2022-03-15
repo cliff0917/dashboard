@@ -50,13 +50,6 @@ SECOND_STYLE = {
 }
 
 def update(startDate, endDate, freqs):
-
-    if startDate >= endDate:
-        status = ['--' for i in range(4)]
-        status += ['', '']
-        status.insert(0, '起始時間必須小於結束時間, 請重新選擇時間')
-        return status
-
     # get chart
     area_fig = area.update(startDate, endDate, 'rule.level', freqs, 'Alert level evolution')
 

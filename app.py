@@ -6,7 +6,6 @@ import os
 import dash
 import webbrowser
 from dash import dcc, html, callback
-from datetime import datetime, timedelta
 from dash.dependencies import Input, Output
 
 import globals
