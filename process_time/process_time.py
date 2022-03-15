@@ -1,17 +1,9 @@
-import pandas as pd
 from datetime import datetime
 
 interval_title={'1s': 'second', '5s': '5 seconds', '10s': '10 seconds', '30s': '30 seconds',
                 '1min': 'minute', '5min': '5 minutes', '10min': '10 minutes','30min': '30 minutes',
                 '1H': 'hour', '3H': '3 hours', '12H': '12 hours',
                 '1D': 'day', '7D': '7 days', '30D': '30days'}
-
-# 修正8小時時差並轉成string
-def localTime(time):
-    dateFormat = '%Y-%m-%dT%H:%M:%S.%f'
-    local = (pd.to_datetime(time) + pd.Timedelta(hours=8)).strftime(dateFormat)
-    local = local[:-3] + '+0800'
-    return local
 
 # 將 interval 轉成 timestamp 格式
 def timestamp_format(intervals, endDate):
@@ -39,11 +31,18 @@ def string_to_time(time):
     time = datetime.strptime(time, dateFormat)
     return time
 
-def get_freq(startDate, endDate):
-    # 修正 datetime 時差, 並 convert datetime to string
-    startDate = localTime(startDate)
-    endDate = localTime(endDate)
+def transfer(time):
+    date, time = time.split(' ')
+    return f'{date}T{time}.000+0800'
 
+def get_time_info(time):
+    startDate, endDate = time
+    startDate = transfer(startDate)
+    endDate = transfer(endDate)
+    startDate, endDate, freqs = get_freq(startDate, endDate)
+    return startDate, endDate, freqs
+
+def get_freq(startDate, endDate):
     # string -> datetime
     start = string_to_time(startDate)
     end = string_to_time(endDate)

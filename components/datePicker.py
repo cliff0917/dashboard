@@ -1,46 +1,58 @@
-import dash_datetimepicker
+import feffery_antd_components as fac
 import dash_bootstrap_components as dbc
 from dash import html
+from datetime import datetime, timedelta
 
-# discover 的 date_picker
-date_picker = dbc.Row(
-    [
-        dash_datetimepicker.DashDatetimepicker(id="datetime-picker"),
-        html.Button('Update', id='submit_date', style={'margin-left':'1rem'}, n_clicks=0),
-    ],
-    style={'margin-left':'5px'}
-)
+# 新的 timepicker 統一 time format
+def current_time():
+    dateFormat = "%Y-%m-%d %H:%M:%S"
+    now = datetime.now()
+    yesterday = now - timedelta(days=1)
+    now = now.strftime("%Y-%m-%d %H:%M:%S")
+    yesterday = yesterday.strftime("%Y-%m-%d %H:%M:%S")
+    return yesterday, now
 
-datetime_output = html.H6(id='datetime-output', style={'margin-top': '20px', 'margin-left': '7px'})
-hitNum = html.H1(
-    [
-        '載入資料中',
-        dbc.Spinner(size="lg", spinner_style={'margin-left': '15px', 'width': '40px', 'height': '40px'}),
-    ],
-    style={'textAlign': 'center'}, id='dataNum'
-)
+def discover_timepicker():
+    # 取得現在時間
+    yesterday, now = current_time()
 
-date = dbc.Col(
-    [
-        date_picker,
-        datetime_output,
-    ],
-)
+    # discover 的 date_picker
+    date_picker = dbc.Row(
+        [
+            fac.AntdDateRangePicker(locale='en-us', showTime=True, defaultValue=[yesterday, now], id='datetime-picker'),
+            html.Button('Update', id='submit_date', style={'margin-left':'1rem'}, n_clicks=0),
+        ],
+        style={'margin-left':'5px'}
+    )
 
-# security events 的 date_picker (security events 簡稱 se)
-se_date_picker = dbc.Row(
-    [
-        dash_datetimepicker.DashDatetimepicker(id="se-datetime-picker"),
-        html.Button('Update', id='se-submit_date', style={'margin-left':'1rem', 'font-size': '15px', 'height': 37}, n_clicks=0),
-    ],
-    style={'margin-left':'5px'}
-)
+    datetime_output = html.H6(id='datetime-output', style={'margin-top': '20px', 'margin-left': '7px'})
 
-se_datetime_output = html.H6('', id='se-datetime-output', style={'margin-top': '20px', 'margin-left': '7px'})
+    date = dbc.Col(
+        [
+            date_picker,
+            datetime_output,
+        ],
+    )
+    return date
 
-se_date = dbc.Col(
-    [
-        se_date_picker,
-        se_datetime_output,
-    ],
-)
+def se_timepicker():
+    # 取得現在時間
+    yesterday, now = current_time()
+
+    # security events 的 date_picker (security events 簡稱 se)
+    se_date_picker = dbc.Row(
+        [
+            fac.AntdDateRangePicker(locale='en-us', showTime=True, defaultValue=[yesterday, now], id='se-datetime-picker'),
+            html.Button('Update', id='se-submit_date', style={'margin-left':'1rem', 'font-size': '15px', 'height': 37}, n_clicks=0),
+        ],
+        style={'margin-left':'5px'}
+    )
+    se_datetime_output = html.H6('', id='se-datetime-output', style={'margin-top': '20px', 'margin-left': '7px'})
+
+    se_date = dbc.Col(
+        [
+            se_date_picker,
+            se_datetime_output,
+        ],
+    )
+    return se_date

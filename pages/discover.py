@@ -1,15 +1,18 @@
-import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
 
-import globals
 from process_time import process_time
 from components import fields, datePicker, discover_display, collapse_item
 
 # components
-date = datePicker.date
-hitNum = datePicker.hitNum
+hitNum = html.H1(
+    [
+        '載入資料中',
+        dbc.Spinner(size="lg", spinner_style={'margin-left': '15px', 'width': '40px', 'height': '40px'}),
+    ],
+    style={'textAlign': 'center'}, id='dataNum'
+)
 fields_bar = html.Div(fields.fields_bar)
 
 DISPLAY_STYLE = {
@@ -24,29 +27,31 @@ DISPLAY_STYLE = {
     'zIndex':1,
 }
 
-layout = html.Div(
-    [
-        dbc.Row(
-            [
-                fields_bar,
-                dbc.Col(
-                    [
-                        date,
-                        dcc.Loading(
-                            html.Div(
-                                [
-                                    hitNum,
-                                    dbc.Col(id='graph-and-table'),
-                                ],
+def serve_layout():
+    layout = html.Div(
+        [
+            dbc.Row(
+                [
+                    fields_bar,
+                    dbc.Col(
+                        [
+                            datePicker.discover_timepicker(),   # live update
+                            dcc.Loading(
+                                html.Div(
+                                    [
+                                        hitNum,
+                                        dbc.Col(id='graph-and-table'),
+                                    ],
+                                ),
                             ),
-                        ),
-                    ],
-                    style=DISPLAY_STYLE,
-                ),
-            ],
-        ),
-    ],
-)
+                        ],
+                        style=DISPLAY_STYLE,
+                    ),
+                ],
+            ),
+        ],
+    )
+    return layout
 
 fields_btn = [Input(f'{i}', 'is_open') for i in range(len(collapse_item.add_collapse_combines))]
 
@@ -62,11 +67,10 @@ fields_btn = [Input(f'{i}', 'is_open') for i in range(len(collapse_item.add_coll
         fields_btn,
     ],
     [
-        State('datetime-picker', 'startDate'),
-        State('datetime-picker', 'endDate'),
+        State('datetime-picker', 'value')
     ]
 )
-def update(n_clicks, fields_btn, startDate, endDate):
-    # 修正 datetime 時差, 並得到 interval
-    startDate, endDate, freqs = process_time.get_freq(startDate, endDate)
+def update(n_clicks, fields_btn, time):
+    # 將 time 轉成 timestamp format, 並得到 interval
+    startDate, endDate, freqs = process_time.get_time_info(time)
     return discover_display.update(startDate, endDate, freqs)

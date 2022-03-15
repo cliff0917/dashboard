@@ -6,6 +6,7 @@ import os
 import dash
 import webbrowser
 from dash import dcc, html, callback
+from datetime import datetime, timedelta
 from dash.dependencies import Input, Output
 
 import globals
@@ -48,10 +49,10 @@ def display_page(pathname):
         return home.layout
 
     elif pathname == '/Discover':
-        return discover.layout
+        return discover.serve_layout()  # live update
 
     elif pathname == '/Security-Events':
-        return security_events.layout
+        return security_events.serve_layout()   # live update
 
     return non_exist.layout  # 若非以上路徑, 則 return 404 message
 
