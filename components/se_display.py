@@ -53,7 +53,7 @@ def update(startDate, endDate, freqs):
 
     if startDate >= endDate:
         status = ['--' for i in range(4)]
-        status += ['', '', dash.no_update]
+        status += ['', '']
         status.insert(0, '起始時間必須小於結束時間, 請重新選擇時間')
         return status
 
@@ -63,9 +63,9 @@ def update(startDate, endDate, freqs):
     # 若無資料
     if len(area_fig.data) == 0:
         no_data = [0 for i in range(4)]
-        no_data.insert(0, f'從 {startDate} 到 {endDate}')
         msg = html.H1('此區間無資料', style={'fontSize':40, 'margin-left':850, 'margin-top':100})
-        no_data += [msg, [], {}]
+        no_data += [msg, '']
+        no_data.insert(0, f'從 {startDate} 到 {endDate}')
         return no_data
 
     # 若有資料
@@ -118,4 +118,4 @@ def update(startDate, endDate, freqs):
                                              {'timestamp': {"$lte":endDate}},
                                              {'rule.groups': 'authentication_success'}]})
 
-    return [f'從 {startDate} 到 {endDate}', total, level12, fail, success, first_row, second_row, {'height': 200}]
+    return [f'從 {startDate} 到 {endDate}', total, level12, fail, success, first_row, second_row]

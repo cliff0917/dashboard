@@ -38,41 +38,41 @@ layout = html.Div(
                 ),
             ],
         ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        html.H4('Total'),
-                        html.H4('--', style={'fontSize':30, 'color':'blue'}, id='total'),
-                    ],
-                    style=COL_STYLE,
-                ),
-                dbc.Col(
-                    [
-                         html.H4('Level 12 or above alerts'),
-                         html.H4('--', style={'fontSize':30, 'color':'red'}, id='level12'),
-                    ],
-                    style=COL_STYLE,
-                ),
-                dbc.Col(
-                    [
-                        html.H4('Authentication failure'),
-                        html.H4('--', style={'fontSize':30, 'color':'red'}, id='fail'),
-                    ],
-                    style=COL_STYLE,
-                ),
-                dbc.Col(
-                    [
-                        html.H4('Authentication success'),
-                        html.H4('--', style={'fontSize':30, 'color':'green'}, id='success'),
-                    ],
-                    style=COL_STYLE,
-                ),
-            ],
-            style={'margin-top':10},
-        ),
         dcc.Loading(
             [
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [
+                                html.H4('Total'),
+                                html.H4('--', style={'fontSize':30, 'color':'blue'}, id='total'),
+                            ],
+                            style=COL_STYLE,
+                        ),
+                        dbc.Col(
+                            [
+                                html.H4('Level 12 or above alerts'),
+                                html.H4('--', style={'fontSize':30, 'color':'red'}, id='level12'),
+                            ],
+                            style=COL_STYLE,
+                        ),
+                        dbc.Col(
+                            [
+                                html.H4('Authentication failure'),
+                                html.H4('--', style={'fontSize':30, 'color':'red'}, id='fail'),
+                            ],
+                            style=COL_STYLE,
+                        ),
+                        dbc.Col(
+                            [
+                                html.H4('Authentication success'),
+                                html.H4('--', style={'fontSize':30, 'color':'green'}, id='success'),
+                            ],
+                            style=COL_STYLE,
+                        ),
+                    ],
+                    style={'margin-top':10},
+                ),
                 dbc.Row(
                     id='graph-frist-row',
                 ),
@@ -80,7 +80,6 @@ layout = html.Div(
                     id='graph-second-row',
                 ),
             ],
-            id='se-loading',
         ),
     ],
 )
@@ -95,7 +94,6 @@ layout = html.Div(
         Output('success', 'children'),
         Output('graph-frist-row', 'children'),
         Output('graph-second-row', 'children'),
-        Output('se-loading', 'style'),
     ],
     [
         Input('se-submit_date', 'n_clicks'),

@@ -1,4 +1,5 @@
-from dash import dcc, html,  dash_table
+from dash.dependencies import Input, Output
+from dash import dcc, html, callback, dash_table
 
 from plot import bar
 from components.se_display import CONFIG
@@ -25,6 +26,7 @@ def update(startDate, endDate, freqs):
         timestamp_auto_insert = 0
 
     # 根據 selected_fields 篩選資料(若 fields 為空, table 顯示所有 fields)
+    global df
     bar_fig, df = bar.update(startDate, endDate, freqs, selected_fields)
 
     # 若無資料
@@ -32,6 +34,7 @@ def update(startDate, endDate, freqs):
         return [f'從 {startDate} 到 {endDate}', '此區間無資料', []]
 
     # 若有資料
+    df.insert(0, '#', [i for i in range(1, len(df)+1)])
     bar_graph = dcc.Graph(
         figure=bar_fig,
         id='bar_chart', clickData=None, hoverData=None,
@@ -69,7 +72,7 @@ def update(startDate, endDate, freqs):
             'data': 0,
         },
         style_cell_conditional=adjusted_columns,
-        #filter_action="native",
+        # filter_action="native",
         style_data_conditional=[
             {
                 'if': {'row_index': 'odd'},
@@ -95,7 +98,10 @@ def update(startDate, endDate, freqs):
             'height': 700,
             'overflowY': 'auto',
         },
-        # page_size=100, # 預設一頁有250列
+        id='dash-table',
+        page_action='custom',   # 後端分頁
+        page_current=0,
+        page_size=100,
     )
 
     display = [
@@ -105,3 +111,37 @@ def update(startDate, endDate, freqs):
     ]
 
     return [f'從 {startDate} 到 {endDate}', f'{len(df)} hits', display]
+
+# 後端分頁, 以減少延遲和內存壓力, 外加排序功能
+@callback(
+    [
+        Output('dash-table', 'data'),
+        Output('dash-table', 'page_count'),
+    ],
+    [
+        Input('dash-table', 'page_current'),
+        Input('dash-table', 'page_size'),
+        Input('dash-table', 'sort_by'),
+    ]
+)
+def refresh_page_data(page_current, page_size, sort_by):
+    global df
+    # sort_by 紀錄參與排序的 col_name, 以及其排序方式(asc, desc)
+    if sort_by:
+        return [
+            df.sort_values(
+                [col['column_id'] for col in sort_by],
+                ascending=[
+                    col['direction'] == 'asc'
+                    for col in sort_by
+                ]
+            )
+            .iloc[page_current * page_size:(page_current + 1) * page_size]
+            .to_dict('records'),
+            1 + df.shape[0] // page_size
+        ]
+
+    return [
+        df.iloc[page_current * page_size:(page_current + 1) * page_size].to_dict('records'),
+        1 + df.shape[0] // page_size
+    ]
