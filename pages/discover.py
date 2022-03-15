@@ -13,7 +13,7 @@ hitNum = html.H1(
     ],
     style={'textAlign': 'center'}, id='dataNum'
 )
-fields_bar = html.Div(fields.fields_bar)
+fields_bar = fields.fields_bar
 
 DISPLAY_STYLE = {
     "transition": "margin-left .5s",

@@ -21,39 +21,41 @@ FIELD_STYLE = {
 add_collapse_combines = collapse_item.add_collapse_combines
 del_collapse_combines = collapse_item.del_collapse_combines
 
-fields_bar = dbc.Col(
-    [
-        dbc.Row(
-            [
-                dbc.Col(style={"width": 50}),
-            ],
-        ),
-        dbc.Container(
-            [
-                dbc.Row(
-                    [
-                        html.B('Selected fields:', style={'fontSize':20})
-                    ],
-                ),
-                dbc.Row(
-                    [
-                        del_collapse_combine for del_collapse_combine in del_collapse_combines
-                    ],
-                ),
-                html.Hr(style={'borderColor':'black'}),
-                dbc.Row(
-                    [
-                        html.B('Available fields:', style={'fontSize':20})
-                    ],
-                ),
-                dbc.Row(
-                    [
-                        add_collapse_combine for add_collapse_combine in add_collapse_combines
-                    ],
-                ),
-            ],
-        ),
-    ],
-    id='fields_bar',
-    style=FIELD_STYLE,
-),
+fields_bar =  html.Div(
+    dbc.Col(
+        [
+            dbc.Row(
+                [
+                    dbc.Col(style={"width": 50}),
+                ],
+            ),
+            dbc.Container(
+                [
+                    dbc.Row(
+                        [
+                            html.B('Selected fields:', style={'fontSize':20})
+                        ],
+                    ),
+                    dbc.Row(
+                        [
+                            del_collapse_combine for del_collapse_combine in del_collapse_combines
+                        ],
+                    ),
+                    html.Hr(style={'borderColor':'black'}),
+                    dbc.Row(
+                        [
+                            html.B('Available fields:', style={'fontSize':20})
+                        ],
+                    ),
+                    dbc.Row(
+                        [
+                            add_collapse_combine for add_collapse_combine in add_collapse_combines
+                        ],
+                    ),
+                ],
+            ),
+        ],
+        id='fields_bar',
+        style=FIELD_STYLE,
+    )
+)
