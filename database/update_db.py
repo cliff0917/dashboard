@@ -40,7 +40,7 @@ def update_db(posts, dir_path):
     convert_month = {}
     for i in range(len(months)):
         convert_month[str(i+1).zfill(2)] = months[i]
-
+    last_time =  last_time.split('/')[-1]
     dates_lst = get_date_list(last_time, now_time)
 
     # 特殊處理上次更新的最後一天
@@ -49,14 +49,13 @@ def update_db(posts, dir_path):
     f = open(f'{dir_path}/{last_y}/{convert_month[last_m]}/ossec-alerts-{last_d}.json', 'r+')
     lines = f.readlines()
     update_lines = lines[last_cnt:]
+    json_lines = [json.loads(line) for line in update_lines]
+    data += json_lines
+    # print(f'{dates_lst[0]} 新增{len(json_lines)}筆')
 
     # 更新 last date info
     last_date_info = [last_time, len(lines)]
     create_db.record_last(last_date_info)
-
-    json_lines = [json.loads(line) for line in update_lines]
-    data += json_lines
-    # print(f'{dates_lst[0]} 新增{len(json_lines)}筆')
 
     # 更新其他天的資料
     for date in dates_lst[1:]:
