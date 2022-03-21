@@ -50,7 +50,7 @@ def get_freq(startDate, endDate):
     days = (end-start).days
     seconds = (end-start).seconds
     if days == 0:
-        if seconds < 5*60: # x <= 1 (minutes)
+        if seconds < 5*60: # x <= 5 (minutes)
             freqs = '1s'
         elif seconds >= 5*60 and seconds < 7*60:   # 5 <= x < 7 (minutes)
             freqs = '5s'
