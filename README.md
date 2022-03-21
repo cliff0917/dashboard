@@ -1,4 +1,11 @@
 # dashboard
+## 路徑、密碼更改
+請先到 globals.py 中更改 sudoPassword, dir_path
+
+sudoPassword 是指使用者密碼
+
+dir_path 是 filebeat 收集 alert json files 的路徑, 預設為 /var/ossec/logs/alerts
+
 ## 環境安裝
 ```
 git clone https://github.com/cliff0917/dashboard.git
