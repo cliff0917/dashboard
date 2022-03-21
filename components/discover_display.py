@@ -61,7 +61,7 @@ def update(startDate, endDate, freqs):
             'textOverflow': 'ellipsis',
             'minWidth': 240,
             'maxWidth': 240,
-            'whiteSpace': 'pre-line',   # 超過自動換行
+            # 'whiteSpace': 'pre-line',   # 超過自動換行
         },
         fixed_rows={
             'headers': True,
@@ -90,10 +90,6 @@ def update(startDate, endDate, freqs):
             } for row in df.to_dict('records')
         ],
         tooltip_header={i: i for i in df.columns},
-        style_table={
-            'height': 700,
-            'overflowY': 'auto',
-        },
         id='dash-table',
         page_action='custom',   # 後端分頁
         page_current=0,
