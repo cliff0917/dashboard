@@ -23,7 +23,10 @@ def get_time_info(time):
     year, month, day = time.split('-')
     return year, month, day
 
-def update_db(posts, dir_path):
+def update_db(posts, dir_path, sudoPassword):
+    create_db.change_permission(dir_path, sudoPassword)
+    create_db.unzip(dir_path, sudoPassword)
+
     file = open('last_date.pkl', 'rb')
     last_time, last_cnt = pkl.load(file)
     # print(last_time, last_cnt)
@@ -46,7 +49,7 @@ def update_db(posts, dir_path):
     # 特殊處理上次更新的最後一天
     data = []
     last_y, last_m, last_d = get_time_info(dates_lst[0])
-    f = open(f'{dir_path}/{last_y}/{convert_month[last_m]}/ossec-alerts-{last_d}.json', 'r+')
+    f = open(f'{dir_path}/{last_y}/{convert_month[last_m]}/ossec-alerts-{last_d}.json', 'r')
     lines = f.readlines()
     update_lines = lines[last_cnt:]
     try:
@@ -64,7 +67,7 @@ def update_db(posts, dir_path):
     for date in dates_lst[1:]:
         year, month, day = get_time_info(date)
         try:
-            f = open(f'{dir_path}/{year}/{convert_month[month]}/ossec-alerts-{day}.json', 'r+')
+            f = open(f'{dir_path}/{year}/{convert_month[month]}/ossec-alerts-{day}.json', 'r')
             lines = f.readlines()
 
             # 更新 last date info

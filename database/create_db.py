@@ -8,9 +8,7 @@ def record_last(last_date_info):
     pkl.dump(last_date_info, file)
     file.close()
 
-def createDB(database, dir_path, sudoPassword):
-
-    # 更改目錄存取權限
+def change_permission(dir_path, sudoPassword):
     paths = dir_path.split('/')
     for i in range(2, len(paths)+1):
         path = '/'.join(paths[:i])
@@ -21,10 +19,19 @@ def createDB(database, dir_path, sudoPassword):
             changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 -R {path}"
             os.system(changePermission_cmd)
 
+def unzip(dir_path, sudoPassword):
     # unzip all .json.gz files => 用 "find {dir_path} -name '*.json.gz' -exec gunzip {} +" 指令
     # f sting 中用兩個{}, 來顯示{}
     unzip_cmd = f"echo {sudoPassword} | sudo -S find {dir_path} -name '*.json.gz' -exec gunzip {{}} +"
     os.system(unzip_cmd)
+
+def createDB(database, dir_path, sudoPassword):
+
+    # 更改目錄存取權限
+    change_permission(dir_path, sudoPassword)
+
+    # unzip json.gz files
+    unzip(dir_path, sudoPassword)
 
     # 找出年份(2000~2099)的資料夾, 並由小到大排序
     targetPattern = "20[0-9][0-9]"

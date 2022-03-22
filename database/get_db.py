@@ -10,7 +10,7 @@ def get_current_db(dir_path, sudoPassword):
     if current_db == []:
         create_db.createDB(posts, dir_path, sudoPassword)
     else:
-        update_db.update_db(posts, dir_path)
+        update_db.update_db(posts, dir_path, sudoPassword)
     return client, posts
 
 def connect_db():
