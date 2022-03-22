@@ -49,8 +49,11 @@ def update_db(posts, dir_path):
     f = open(f'{dir_path}/{last_y}/{convert_month[last_m]}/ossec-alerts-{last_d}.json', 'r+')
     lines = f.readlines()
     update_lines = lines[last_cnt:]
-    json_lines = [json.loads(line) for line in update_lines]
-    data += json_lines
+    try:
+        json_lines = [json.loads(line) for line in update_lines]
+        data += json_lines
+    except:
+        pass
     # print(f'{dates_lst[0]} 新增{len(json_lines)}筆')
 
     # 更新 last date info

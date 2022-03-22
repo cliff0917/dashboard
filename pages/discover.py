@@ -21,9 +21,8 @@ DISPLAY_STYLE = {
     "padding": "1rem 1rem",
     "background-color": "#f8f9fa",
     'fontSize': 10,
-    'zIndex':1,
     'border':'1px black solid',
-    'width': '1x',
+    'width': '1px',
     'zIndex':1,
 }
 
