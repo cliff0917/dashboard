@@ -12,6 +12,11 @@ def change_permission(dir_path, sudoPassword):
     paths = dir_path.split('/')
     for i in range(2, len(paths)+1):
         path = '/'.join(paths[:i])
+
+        # 若 path permission 已經為 777, 則不用改變他的 permission
+        if oct(os.stat(path).st_mode)[-3:] == '777':
+            continue
+
         if i != len(paths):
             changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 {path}"
             os.system(changePermission_cmd)
@@ -20,6 +25,10 @@ def change_permission(dir_path, sudoPassword):
             os.system(changePermission_cmd)
 
 def unzip(dir_path, sudoPassword):
+    # 若 path permission 已經為 777, 則不用改變他的 permission
+    if oct(os.stat(dir_path).st_mode)[-3:] == '777':
+        return
+
     # unzip all .json.gz files => 用 "find {dir_path} -name '*.json.gz' -exec gunzip {} +" 指令
     # f sting 中用兩個{}, 來顯示{}
     unzip_cmd = f"echo {sudoPassword} | sudo -S find {dir_path} -name '*.json.gz' -exec gunzip {{}} +"
