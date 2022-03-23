@@ -63,7 +63,6 @@ def createDB(database, dir_path, sudoPassword):
                     day = json_files[i].split('.')[-2].split('-')[-1]
                     last_date_info = [f'{year_}-{month_dict[month]}-{day}', len(lines)]
                     record_last(last_date_info)
-
                 try:
                     json_lines = [json.loads(line) for line in lines]
                     num += len(lines)
@@ -81,3 +80,4 @@ def createDB(database, dir_path, sudoPassword):
         num += len(lines)
         database.insert_many(json_lines)
     print(f'總共 {num} 筆')
+    return num

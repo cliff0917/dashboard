@@ -81,9 +81,12 @@ def update_db(posts, dir_path, sudoPassword):
             # print(f'{date} 沒有資料')
 
     # print('-' * 25)
+    num = 0
     if data == []:
         pass
         # print('沒有要新增的資料')
     else:
+        num = len(data)
         posts.insert_many(data) # insert data into mongoDB
         print(f'新增{len(data)}筆資料')
+    return num

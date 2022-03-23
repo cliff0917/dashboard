@@ -19,6 +19,8 @@ navbar = navbar.navbar
 menu_bar = menubar.menu_bar
 url = dcc.Location(id="url")
 content = html.Div(id='content')
+global first
+first = 1
 
 def serve_layout():
     # 得到最新狀態的 db
@@ -44,14 +46,19 @@ app.layout = serve_layout
     Input('url', 'pathname')
 )
 def display_page(pathname):
+    global first
     if pathname in ['/', '/Home']:
         return home.layout
 
     elif pathname == '/Discover':
-        return discover.serve_layout()  # live update
+        # live update layout
+        first, layout = discover.serve_layout(first)
+        return layout
 
     elif pathname == '/Security-Events':
-        return security_events.serve_layout()   # live update
+        # live update layout
+        first, layout = security_events.serve_layout(first)
+        return layout
 
     return non_exist.layout  # 若非以上路徑, 則 return 404 message
 

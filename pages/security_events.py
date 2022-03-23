@@ -3,7 +3,7 @@ from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
 
 from process_time import process_time
-from components import datePicker, se_display
+from components import datePicker, se_display, alert
 
 DISPLAY_STYLE = {
     "transition": "margin-left .5s",
@@ -22,14 +22,21 @@ COL_STYLE = {
    'textAlign': 'center',
 }
 
-def serve_layout():
+def serve_layout(first):
+    first, notification = alert.update_notification(first)
+
     layout = html.Div(
         [
             dbc.Row(
                 [
                     dbc.Col(
                         [
-                            datePicker.se_timepicker(), # live update
+                            dbc.Row(
+                                [
+                                    datePicker.se_date_picker(), # live update
+                                    notification,
+                                ],
+                            )
                         ],
                         style=DISPLAY_STYLE,
                     ),
@@ -80,7 +87,7 @@ def serve_layout():
             ),
         ],
     )
-    return layout
+    return first, layout
 
 # 初始化 display or 按下 Update 按鈕的觸發事件
 @callback(

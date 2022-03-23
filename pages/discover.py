@@ -2,8 +2,9 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
 
+import globals
 from process_time import process_time
-from components import fields, datePicker, discover_display, collapse_item
+from components import fields, datePicker, discover_display, collapse_item, alert
 
 # components
 hitNum = html.H1(
@@ -26,7 +27,9 @@ DISPLAY_STYLE = {
     'zIndex':1,
 }
 
-def serve_layout():
+def serve_layout(first):
+    first, notification = alert.update_notification(first)
+
     layout = html.Div(
         [
             dbc.Row(
@@ -34,7 +37,12 @@ def serve_layout():
                     fields_bar,
                     dbc.Col(
                         [
-                            datePicker.discover_timepicker(),   # live update
+                            dbc.Row(
+                                [
+                                    datePicker.discover_date_picker(),   # live update
+                                    notification,
+                                ]
+                            ),
                             dcc.Loading(
                                 html.Div(
                                     [
@@ -50,7 +58,7 @@ def serve_layout():
             ),
         ],
     )
-    return layout
+    return first, layout
 
 fields_btn = [Input(f'{i}', 'is_open') for i in range(len(collapse_item.add_collapse_combines))]
 

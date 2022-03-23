@@ -3,6 +3,8 @@ import dash_bootstrap_components as dbc
 from dash import html
 from datetime import datetime, timedelta
 
+from components import alert
+
 # 新的 timepicker 統一 time format
 def current_time():
     dateFormat = "%Y-%m-%d %H:%M:%S"
@@ -12,7 +14,7 @@ def current_time():
     yesterday = yesterday.strftime("%Y-%m-%d %H:%M:%S")
     return yesterday, now
 
-def discover_timepicker():
+def discover_date_picker():
     # 取得現在時間
     yesterday, now = current_time()
 
@@ -35,7 +37,7 @@ def discover_timepicker():
     )
     return date
 
-def se_timepicker():
+def se_date_picker():
     # 取得現在時間
     yesterday, now = current_time()
 
@@ -43,7 +45,7 @@ def se_timepicker():
     se_date_picker = dbc.Row(
         [
             fac.AntdDateRangePicker(locale='en-us', showTime=True, defaultValue=[yesterday, now], id='se-datetime-picker'),
-            html.Button('Update', id='se-submit_date', style={'margin-left':'1rem', 'font-size': '15px', 'height': 37}, n_clicks=0),
+            html.Button('Update', id='se-submit_date', style={'margin-left':'1rem'}, n_clicks=0),
         ],
         style={'margin-left':'5px'}
     )
