@@ -14,11 +14,8 @@ def update(startDate, endDate, freqs, selected_fields):
 
     # 將 selected_fields 做標記, 等等會送入 database 做查詢(若 fields 為空, table 顯示所有 fields)
     # => 因為 display_cols = {'_id':0}, 會 query 除了 '_id' 以外的所有 cols
-    # query 負責 drop database 中任何 selected_fields 值為 null 的 row , display_cols 決定 data table 顯示哪些 column
-    query = {}
     display_cols = {'_id':0}
     for key in selected_fields:
-        query[key] = {"$exists": True}
         display_cols[key] = 1
 
     # 轉成 timestamp 格式
@@ -28,19 +25,19 @@ def update(startDate, endDate, freqs, selected_fields):
     cnt = []
     for i in range(1, len(intervals[:-1])):
         result = posts.count_documents({'$and':[{'timestamp':{"$gte":intervals[i-1]}},
-                                                {'timestamp':{"$lt":intervals[i]}},
-                                                query]})
+                                                {'timestamp':{"$lt":intervals[i]}}]})
         cnt.append(result)
 
     # 特殊處理無法被完美切割的最後一個 interval
     result = posts.count_documents({'$and':[{'timestamp':{"$gt":intervals[-2]}},
-                                            {'timestamp':{"$lte":intervals[-1]}},
-                                            query]})
+                                            {'timestamp':{"$lte":intervals[-1]}}]})
     cnt.append(result)
 
     # 找到 startDate ~ endDate 之間的所有 data, 並轉成 data table 的形式
-    data = posts.find({'$and':[{'timestamp':{"$gte":startDate}}, {'timestamp':{"$lte":endDate}}, query]}, display_cols)
+    data = posts.find({'$and':[{'timestamp':{"$gte":startDate}},
+                               {'timestamp':{"$lte":endDate}}]}, display_cols)
     df = pd.json_normalize(data)
+    df.fillna('-', inplace=True)
 
     interval_title = process_time.interval_title
     data = {'time':intervals[:-1]}

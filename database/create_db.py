@@ -25,14 +25,15 @@ def change_permission(dir_path, sudoPassword):
             os.system(changePermission_cmd)
 
 def unzip(dir_path, sudoPassword):
-    # 若 path permission 已經為 777, 則不用改變他的 permission
-    if oct(os.stat(dir_path).st_mode)[-3:] == '777':
-        return
+    gz_files = glob.glob(f'{dir_path}/**/*.json.gz', recursive=True)
 
     # unzip all .json.gz files => 用 "find {dir_path} -name '*.json.gz' -exec gunzip {} +" 指令
     # f sting 中用兩個{}, 來顯示{}
-    unzip_cmd = f"echo {sudoPassword} | sudo -S find {dir_path} -name '*.json.gz' -exec gunzip {{}} +"
-    os.system(unzip_cmd)
+    if len(gz_files) != 0:
+        changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 -R {dir_path}"
+        os.system(changePermission_cmd)
+        unzip_cmd = f"find {dir_path} -name '*.json.gz' -exec gunzip {{}} +"
+        os.system(unzip_cmd)
 
 def createDB(database, dir_path, sudoPassword):
 
