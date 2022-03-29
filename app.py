@@ -63,10 +63,10 @@ def display_page(pathname):
     return non_exist.layout  # 若非以上路徑, 則 return 404 message
 
 if __name__ == '__main__':
-    app.run_server(debug=True, dev_tools_props_check=False) # debug mode
-    # pid = os.fork()
-    # if pid != 0:
-    #     app.run_server()
-    # else:
-    #     url = "http://127.0.0.1:8050/"
-    #     webbrowser.open(url)
+    # app.run_server(debug=True, dev_tools_props_check=False) # debug mode
+    pid = os.fork()
+    if pid != 0:
+        app.run_server()
+    else:
+        url = "http://127.0.0.1:8050/"
+        webbrowser.open(url)

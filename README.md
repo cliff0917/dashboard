@@ -17,13 +17,10 @@ pip install -r requirements.txt
 python app.py
 ```
 
-## 常見問題
+## 可能遇到的問題
 * oserror: [errno 98] address already in use
 
   使用以下指令
   ```
   sudo lsof -t -i tcp:8050 | xargs kill -9
   ```
-* json.decoder.jsondecodeerror: unterminated string starting at: ...
-
-  重跑 ```python app.py``` 即可
