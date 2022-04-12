@@ -1,3 +1,4 @@
+import dash
 from dash.dependencies import Input, Output
 from dash import dcc, html, callback, dash_table
 
@@ -109,6 +110,7 @@ def update(startDate, endDate, freqs):
     [
         Output('dash-table', 'data'),
         Output('dash-table', 'page_count'),
+        Output('dash-table', 'tooltip_data'),
     ],
     [
         Input('dash-table', 'page_current'),
@@ -120,20 +122,21 @@ def refresh_page_data(page_current, page_size, sort_by):
     global df
     # sort_by 紀錄參與排序的 col_name, 以及其排序方式(asc, desc)
     if sort_by:
-        return [
-            df.sort_values(
-                [col['column_id'] for col in sort_by],
-                ascending=[
-                    col['direction'] == 'asc'
-                    for col in sort_by
-                ]
-            )
-            .iloc[page_current * page_size:(page_current + 1) * page_size]
-            .to_dict('records'),
-            1 + df.shape[0] // page_size
-        ]
+        df = df.sort_values(
+            [col['column_id'] for col in sort_by],
+            ascending=[
+                col['direction'] == 'asc'
+                for col in sort_by
+            ]
+        )
 
     return [
         df.iloc[page_current * page_size:(page_current + 1) * page_size].to_dict('records'),
-        1 + df.shape[0] // page_size
+        1 + df.shape[0] // page_size,
+        [
+            {
+                column: {'value': f'{column}\n\n{value}', 'type': 'markdown'}
+                for column, value in row.items()
+            } for row in df.iloc[page_current * page_size:(page_current + 1) * page_size].to_dict('records')
+        ]
     ]
