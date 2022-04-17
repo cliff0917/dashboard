@@ -37,6 +37,15 @@ def update(startDate, endDate, freqs, selected_fields):
     data = posts.find({'$and':[{'timestamp':{"$gte":startDate}},
                                {'timestamp':{"$lte":endDate}}]}, display_cols)
     df = pd.json_normalize(data)
+
+    # 若 selected_fields 有 field 沒出現在 df 中 (代表該 field 在 query 後全為空值, 所以沒出現在 df 中)
+    df_columns = list(df.columns)
+    empty_col = ['-' for i in range(len(df))]
+    for i in range(len(selected_fields)):
+        if selected_fields[i] not in df_columns and selected_fields[i] != 'timestamp':
+            df.insert(loc=len(df_columns), column=selected_fields[i], value=empty_col)
+
+    # 用 - 取代 df 中的空值
     df.fillna('-', inplace=True)
 
     interval_title = process_time.interval_title

@@ -12,6 +12,7 @@ posts = globals.posts
 data = posts.find({}, {'_id':0})
 df = pd.json_normalize(data)
 all_fields = list(df.columns)
+all_fields.remove('timestamp')
 
 # 新增 fields_btn
 add_collapse_combines = []
@@ -67,7 +68,6 @@ for i in range(len(all_fields)):
 #------------------------------------------
 global selected_fields, add_next_click
 selected_fields = []
-timestamp_auto_insert = 0
 add_next_click = [1 for i in range(len(all_fields))]
 
 def click_btn(add_clicks, del_clicks, btn_name):

@@ -1,26 +1,23 @@
-import dash
 from dash.dependencies import Input, Output
 from dash import dcc, html, callback, dash_table
 
 from plot import bar
 from components.se_display import CONFIG
-from components.collapse_item import selected_fields, timestamp_auto_insert
+from components.collapse_item import selected_fields
 
 global CONFIG
 BAR_STYLE = {'border':'1px black solid', 'zIndex':1}
 
 def update(startDate, endDate, freqs):
-    global selected_fields, timestamp_auto_insert, CONFIG
+    global selected_fields, CONFIG
 
-    # 若所選 fields 中沒有 timestamp 則自動加入 timestamp 在最前面
+    # 若所選 fields 中沒有 timestamp, 則自動加入 timestamp 在最前面
     if len(selected_fields) != 0 and 'timestamp' not in selected_fields:
         selected_fields.insert(0, 'timestamp')
-        timestamp_auto_insert = 1
 
-    # 若 fields 中只剩下 timestamp, 且 timestamp 是自動 insert 的 => 刪除 timestamp, 讓 fields 為空 (data table 會顯示所有 fields)
-    elif selected_fields == ['timestamp'] and timestamp_auto_insert == 1:
+    # 若 fields 中只剩下 timestamp=> 刪除 timestamp, 讓 fields 為空 (data table 會顯示所有 fields)
+    elif selected_fields == ['timestamp']:
         selected_fields.remove('timestamp')
-        timestamp_auto_insert = 0
 
     # 根據 selected_fields 篩選資料(若 fields 為空, table 顯示所有 fields)
     global df
