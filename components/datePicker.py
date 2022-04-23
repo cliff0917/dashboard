@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from components import alert
 
-# 新的 timepicker 統一 time format
+# 新的 datepicker 統一 time format
 def current_time():
     dateFormat = "%Y-%m-%d %H:%M:%S"
     now = datetime.now()

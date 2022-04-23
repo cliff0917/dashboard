@@ -28,7 +28,6 @@ def serve_layout():
 
     layout = html.Div(
         [
-            dcc.Store(id='side_click'),
             url,
             navbar,
             menu_bar,

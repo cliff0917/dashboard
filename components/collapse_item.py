@@ -41,6 +41,7 @@ for i in range(len(all_fields)):
             add_collapse_btn,
         ]
     )
+
     add_collapse_combines.append(add_collapse_combine)
 
     # 新增 del collapsed fields, btns
@@ -61,6 +62,7 @@ for i in range(len(all_fields)):
             del_collapse_btn,
         ]
     )
+
     del_collapse_combines.append(del_collapse_combine)
 
 #------------------------------------------
@@ -104,5 +106,6 @@ for i in range(len(all_fields)):
             Input(f'add_btn_{i}', 'n_clicks'),
             Input(f'del_btn_{i}', 'n_clicks'),
             Input(f'{i}', 'id'),
-        ]
+        ],
+        prevent_initial_call=True
     )(click_btn)

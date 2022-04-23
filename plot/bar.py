@@ -42,7 +42,7 @@ def update(startDate, endDate, freqs, selected_fields):
     df_columns = list(df.columns)
     empty_col = ['-' for i in range(len(df))]
     for i in range(len(selected_fields)):
-        if selected_fields[i] not in df_columns and selected_fields[i] != 'timestamp':
+        if selected_fields[i] not in df_columns:
             df.insert(loc=len(df_columns), column=selected_fields[i], value=empty_col)
 
     # 用 - 取代 df 中的空值
