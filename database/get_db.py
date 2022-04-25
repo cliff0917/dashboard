@@ -1,12 +1,19 @@
+import os
 from pymongo import MongoClient
 
-from database import create_db, update_db
+from database import create_db, update_db, del_db
 
 def get_current_db(dir_path, sudoPassword):
+    # 當 last_date.pkl 不存在時, 刪除 DB (更新版本)
+    if not os.path.isfile('./last_date.pkl'):
+        del_db.delete()
+        print('del')
+
     client = MongoClient()
     db = client['pythondb']
     current_db = db.list_collection_names(include_system_collections=False)
     posts = db.posts
+
     if current_db == []:
         num = create_db.createDB(posts, dir_path, sudoPassword)
     else:

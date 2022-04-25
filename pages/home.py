@@ -1,4 +1,4 @@
-from dash import html, dcc
+from dash import html
 
 STYLE = {
     "transition": "margin-left .5s",
