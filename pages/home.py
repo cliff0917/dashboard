@@ -21,7 +21,7 @@ def serve_layout():
                     html.Ul(
                         [
                             html.Li('1. 按 F5 更新資料庫中的資料'),
-                            html.Li('2. DateTime Picker 旁邊的 update 按鈕會先更新資料庫的資料, 然後再搜尋資料庫的資料'),
+                            html.Li('2. DateTime Picker 旁邊的 update 按鈕不更新資料庫的資料, 而是查詢資料庫的資料'),
                             html.Li('3. 滑鼠移到 Graph 上可顯示詳細資訊'),
                             html.Li('4. Graph 可以利用滑鼠縮小放大, 雙擊便可恢復原狀'),
                         ],

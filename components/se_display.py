@@ -2,7 +2,6 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
-import globals
 from database import get_db
 from plot import area, donut, bar
 
@@ -51,9 +50,6 @@ SECOND_STYLE = {
 }
 
 def update(startDate, endDate, freqs):
-    # update db
-    globals.initialize()
-
     # get chart
     area_fig = area.update(startDate, endDate, 'rule.level', freqs, 'Alert level evolution')
 
