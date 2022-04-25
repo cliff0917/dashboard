@@ -1,6 +1,7 @@
 from dash.dependencies import Input, Output
 from dash import dcc, html, callback, dash_table
 
+import globals
 from plot import bar
 from components.se_display import CONFIG
 from components.collapse_item import selected_fields
@@ -10,6 +11,9 @@ BAR_STYLE = {'border':'1px black solid', 'zIndex':1}
 
 def update(startDate, endDate, freqs):
     global selected_fields, CONFIG
+
+    # update db
+    globals.initialize()
 
     # 若所選 fields 中沒有 timestamp, 則自動加入 timestamp 在最前面
     if len(selected_fields) != 0 and 'timestamp' not in selected_fields:
@@ -92,6 +96,8 @@ def update(startDate, endDate, freqs):
         page_action='custom',   # 後端分頁
         page_current=0,
         page_size=100,
+        tooltip_delay=0,
+        tooltip_duration=None
     )
 
     display = [

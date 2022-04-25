@@ -5,4 +5,7 @@ client = MongoClient()
 db = client['pythondb']
 posts = db.posts
 client.drop_database('pythondb') # delete db
-os.remove('./last_date.pkl')
+try:
+    os.remove('./last_date.pkl')
+except:
+    pass

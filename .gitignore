@@ -5,3 +5,7 @@ pages/page2.py
 test.py
 assets/js/
 test.csv
+2022/
+__pycache__
+components/__pycache__
+pages/__pycache__

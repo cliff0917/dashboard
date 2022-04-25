@@ -47,7 +47,7 @@ app.layout = serve_layout
 def display_page(pathname):
     global first
     if pathname in ['/', '/Home']:
-        return home.layout
+        return home.serve_layout()
 
     elif pathname == '/Discover':
         # live update layout
@@ -59,7 +59,7 @@ def display_page(pathname):
         first, layout = security_events.serve_layout(first)
         return layout
 
-    return non_exist.layout  # 若非以上路徑, 則 return 404 message
+    return non_exist.serve_layout()  # 若非以上路徑, 則 return 404 message
 
 if __name__ == '__main__':
     # app.run_server(debug=True, dev_tools_props_check=False) # debug mode
