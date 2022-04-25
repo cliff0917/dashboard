@@ -34,24 +34,25 @@ def serve_layout():
                 [
                     html.Ul(
                         [
-                            html.Li('1. Table 中欄位名稱旁邊的箭頭可以點選, 選擇資料要升or降冪排序'),
+                            html.Li('1. 當 selected fields 為空時, 預設顯示所有的 fields; 否則, 顯示 #(第幾筆資料), timestamp, 和 selected fields'),
+                            html.Li('2. Table 中欄位名稱旁邊的箭頭可以點選, 選擇資料要升or降冪排序'),
                             html.Ul(
                                 [
                                     html.Li(
                                         [
-                                            '升冪: 資料由小到大排序 ',
+                                            '升冪: 所選欄位的資料由小到大排序 ',
                                             html.Img(src='./assets/img/asc.png'),
                                         ]
                                     ),
                                     html.Li(
                                         [
-                                            '降冪: 資料由大到小排序 ',
+                                            '降冪: 所選欄位的資料由大到小排序 ',
                                             html.Img(src='./assets/img/desc.png'),
                                         ]
                                     ),
                                 ]
                             ),
-                            html.Li('2. 滑鼠移到 Table 中, 可以顯示詳細資訊'),
+                            html.Li('3. 滑鼠移到 Table 中, 可以顯示詳細資訊'),
                             html.Img(src='./assets/img/hover.png'),
                         ],
                         style={'fontSize': 30}
