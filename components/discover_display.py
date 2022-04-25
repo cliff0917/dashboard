@@ -83,7 +83,7 @@ def update(startDate, endDate, freqs):
         },
         tooltip_data=[
             {
-                column: {'value': f'{column}\n\n{value}', 'type': 'markdown'}
+                column: {'value': f'{value}', 'type': 'markdown'}
                 for column, value in row.items()
             } for row in df.to_dict('records')
         ],
@@ -134,7 +134,7 @@ def refresh_page_data(page_current, page_size, sort_by):
         1 + df.shape[0] // page_size,
         [
             {
-                column: {'value': f'{column}\n\n{value}', 'type': 'markdown'}
+                column: {'value': f'{value}', 'type': 'markdown'}
                 for column, value in row.items()
             } for row in df.iloc[page_current * page_size:(page_current + 1) * page_size].to_dict('records')
         ]
