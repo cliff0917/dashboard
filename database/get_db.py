@@ -4,10 +4,9 @@ from pymongo import MongoClient
 from database import create_db, update_db, del_db
 
 def get_current_db(dir_path, sudoPassword):
-    # 當 last_date.pkl 不存在時, 刪除 DB (更新版本)
+    # 當 last_date.pkl 不存在時(更新版本), 刪除 DB 
     if not os.path.isfile('./last_date.pkl'):
         del_db.delete()
-        print('del')
 
     client = MongoClient()
     db = client['pythondb']

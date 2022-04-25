@@ -89,5 +89,4 @@ def createDB(database, dir_path, sudoPassword):
         json_lines = [json.loads(line) for line in lines]
         num += len(lines)
         database.insert_many(json_lines)
-    print(f'總共 {num} 筆')
     return num
