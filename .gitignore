@@ -9,3 +9,6 @@ test.csv
 __pycache__
 components/__pycache__
 pages/__pycache__
+plot/__pycache__
+process_time/__pycache__
+database/__pycache__
