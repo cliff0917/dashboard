@@ -14,13 +14,14 @@ from pages import home, discover, security_events, non_exist
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
+global first
+first = 1
+
 # components
 navbar = navbar.navbar
 menu_bar = menubar.menu_bar
 url = dcc.Location(id="url")
 content = html.Div(id='content')
-global first
-first = 1
 
 def serve_layout():
     # 得到最新狀態的 db
@@ -46,16 +47,16 @@ app.layout = serve_layout
 )
 def display_page(pathname):
     global first
+
+    # live update layout
     if pathname in ['/', '/Home']:
         return home.serve_layout()
 
     elif pathname == '/Discover':
-        # live update layout
         first, layout = discover.serve_layout(first)
         return layout
 
     elif pathname == '/Security-Events':
-        # live update layout
         first, layout = security_events.serve_layout(first)
         return layout
 
