@@ -98,7 +98,7 @@ def update(startDate, endDate, freqs):
         tooltip_duration=None
     )
 
-    default_page_size = 50 # 每頁預設 data 數
+    default_page_size = 100 # 每頁預設 data 數
     display = [
         bar_graph,
         html.Br(),
