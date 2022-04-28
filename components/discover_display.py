@@ -29,6 +29,7 @@ def update(startDate, endDate, freqs):
 
     # 若有資料
     df.insert(0, '#', [i for i in range(1, len(df)+1)])
+    all_cols = list(df.columns)
     bar_graph = dcc.Graph(
         figure=bar_fig,
         id='bar_chart', clickData=None, hoverData=None,
@@ -36,19 +37,19 @@ def update(startDate, endDate, freqs):
     )
 
     # 解決 data table 中 list 的顯示問題, 將 df 中的 list 轉成 string 用逗號隔開, 並串接在一起
-    for column in list(df.columns):
+    for column in all_cols:
         df[column] = [', '.join(map(str, l)) if isinstance (l, list) else l for l in df[column]]
 
     # 根據 column 名稱長度, 自動調整 data table 的 header 寬度
-    long_column_names = [{"if": {"column_id": column}, "min-width": "300px"} for column in df.columns if len(column) >= 30]
-    med_column_names = [{"if": {"column_id": column}, "min-width": "225px"} for column in df.columns if (len(column) > 15 and len(column)) < 30]
-    small_column_names = [{"if": {"column_id": column}, "min-width": "120px"} for column in df.columns if len(column) <= 15]
+    long_column_names = [{"if": {"column_id": column}, "min-width": "300px"} for column in all_cols if len(column) >= 30]
+    med_column_names = [{"if": {"column_id": column}, "min-width": "225px"} for column in all_cols if (len(column) > 15 and len(column)) < 30]
+    small_column_names = [{"if": {"column_id": column}, "min-width": "120px"} for column in all_cols if len(column) <= 15]
 
     adjusted_columns = long_column_names + med_column_names + small_column_names
 
     table = dash_table.DataTable(
         data=df.to_dict('records'),
-        columns=[{'name': column, 'id': column} for column in df.columns],
+        columns=[{'name': column, 'id': column} for column in all_cols],
         virtualization=True,
         sort_action='custom',
         sort_mode='multi',
@@ -87,7 +88,7 @@ def update(startDate, endDate, freqs):
                 for column, value in row.items()
             } for row in df.to_dict('records')
         ],
-        tooltip_header={i: i for i in df.columns},
+        tooltip_header={i: i for i in all_cols},
         id='dash-table',
         page_action='custom',   # 後端分頁
         page_current=0,
