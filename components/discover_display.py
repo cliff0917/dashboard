@@ -98,13 +98,14 @@ def update(startDate, endDate, freqs):
         tooltip_duration=None
     )
 
+    default_page_size = 50 # 每頁預設 data 數
     display = [
         bar_graph,
         html.Br(),
         dbc.Row(
             [
-                html.H3('一頁顯示100筆資料(預設)', style={'margin-left': '15px'}),
-                dcc.Dropdown(value=100, clearable=False, style={'width': '35%', 'margin-left': '15px'},
+                html.H3(f'一頁顯示{default_page_size}筆資料(預設)', style={'margin-left': '15px'}),
+                dcc.Dropdown(value=default_page_size, clearable=False, style={'width': '35%', 'margin-left': '15px'},
                              options=[10, 25, 50, 100], id='row_drop')
             ]
         ),
