@@ -1,3 +1,4 @@
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 from dash import dcc, html, callback, dash_table
 
@@ -100,6 +101,13 @@ def update(startDate, endDate, freqs):
     display = [
         bar_graph,
         html.Br(),
+        dbc.Row(
+            [
+                html.H3('一頁顯示100筆資料(預設)', style={'margin-left': '15px'}),
+                dcc.Dropdown(value=100, clearable=False, style={'width': '35%', 'margin-left': '15px'},
+                             options=[10, 25, 50, 100], id='row_drop')
+            ]
+        ),
         table,
     ]
 
@@ -116,10 +124,13 @@ def update(startDate, endDate, freqs):
         Input('dash-table', 'page_current'),
         Input('dash-table', 'page_size'),
         Input('dash-table', 'sort_by'),
+        Input('row_drop', 'value'),
     ]
 )
-def refresh_page_data(page_current, page_size, sort_by):
+def refresh_page_data(page_current, page_size, sort_by, value):
     global df
+    page_size = value
+
     # sort_by 紀錄參與排序的 col_name, 以及其排序方式(asc, desc)
     if sort_by:
         df = df.sort_values(
