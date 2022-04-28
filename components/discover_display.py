@@ -104,7 +104,7 @@ def update(startDate, endDate, freqs):
         html.Br(),
         dbc.Row(
             [
-                html.H3(f'每頁{default_page_size}筆(預設)', style={'margin-left': '15px'}),
+                html.H3(f'每頁{default_page_size}筆', style={'margin-left': '15px'}, id='page-size'),
                 dcc.Dropdown(value=default_page_size, clearable=False, style={'width': '35%', 'margin-left': '15px'},
                              options=[10, 25, 50, 100], id='row_drop')
             ]
@@ -120,6 +120,7 @@ def update(startDate, endDate, freqs):
         Output('dash-table', 'data'),
         Output('dash-table', 'page_count'),
         Output('dash-table', 'tooltip_data'),
+        Output('page-size', 'children'),
     ],
     [
         Input('dash-table', 'page_current'),
@@ -150,5 +151,6 @@ def refresh_page_data(page_current, page_size, sort_by, value):
                 column: {'value': f'{value}', 'type': 'markdown'}
                 for column, value in row.items()
             } for row in df.iloc[page_current * page_size:(page_current + 1) * page_size].to_dict('records')
-        ]
+        ],
+        f'每頁{page_size}筆'
     ]
