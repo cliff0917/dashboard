@@ -12,3 +12,4 @@ pages/__pycache__
 plot/__pycache__
 process_time/__pycache__
 database/__pycache__
+last_date.pkl

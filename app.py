@@ -7,6 +7,7 @@ import dash
 import webbrowser
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output
+from flask import send_from_directory
 
 import globals
 from components import navbar, menubar
@@ -39,6 +40,7 @@ def serve_layout():
 
 # live update, 請注意這裡是要用 serve_layout 而非 serve_layout()
 app.layout = serve_layout
+server = app.server
 
 # 透過 url 來決定顯示哪個 page
 @callback(
@@ -61,6 +63,26 @@ def display_page(pathname):
         return layout
 
     return non_exist.serve_layout()  # 若非以上路徑, 則 return 404 message
+
+@server.route("/total", methods=['GET'])
+def serving_lottie_total():
+    directory = os.path.join(os.getcwd(), "assets/lottie")
+    return send_from_directory(directory, "total.json")
+
+@server.route("/alert", methods=['GET'])
+def serving_lottie_alert():
+    directory = os.path.join(os.getcwd(), "assets/lottie")
+    return send_from_directory(directory, "alert.json")
+
+@server.route("/failure", methods=['GET'])
+def serving_lottie_failure():
+    directory = os.path.join(os.getcwd(), "assets/lottie")
+    return send_from_directory(directory, "failure.json")
+
+@server.route("/success", methods=['GET'])
+def serving_lottie_success():
+    directory = os.path.join(os.getcwd(), "assets/lottie")
+    return send_from_directory(directory, "success.json")
 
 if __name__ == '__main__':
     # app.run_server(debug=True, dev_tools_props_check=False) # debug mode

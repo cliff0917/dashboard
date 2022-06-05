@@ -1,9 +1,12 @@
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
+from dash_extensions import Lottie
 
 from process_time import process_time
 from components import datePicker, se_display, alert
+
+options = dict(loop=True, autoplay=True, rendererSettings=dict(preserveAspectRatio='xMidYMid slice'))
 
 DISPLAY_STYLE = {
     "transition": "margin-left .5s",
@@ -47,31 +50,59 @@ def serve_layout(first):
                     dbc.Row(
                         [
                             dbc.Col(
-                                [
-                                    html.H4('Total'),
-                                    html.H4('--', style={'fontSize':30, 'color':'blue'}, id='total'),
-                                ],
+                                dbc.Card(
+                                    [
+                                        dbc.CardHeader(Lottie(options=options, width="23%", height="23%", url="/total", speed=2)),
+                                        dbc.CardBody(
+                                            [
+                                                html.H4('Total'),
+                                                html.H4('--', style={'fontSize':30, 'color':'blue'}, id='total'),
+                                            ],
+                                        ),
+                                    ],
+                                ),
                                 style=COL_STYLE,
                             ),
                             dbc.Col(
-                                [
-                                    html.H4('Level 12 or above alerts'),
-                                    html.H4('--', style={'fontSize':30, 'color':'red'}, id='level12'),
-                                ],
+                                dbc.Card(
+                                    [
+                                        dbc.CardHeader(Lottie(options=options, width="15%", height="15%", url="/alert", speed=1)),
+                                        dbc.CardBody(
+                                            [
+                                                html.H4('Level 12 or above alerts'),
+                                                html.H4('--', style={'fontSize':30, 'color':'red'}, id='level12'),
+                                            ],
+                                        ),
+                                    ],
+                                ),
                                 style=COL_STYLE,
                             ),
                             dbc.Col(
-                                [
-                                    html.H4('Authentication failure'),
-                                    html.H4('--', style={'fontSize':30, 'color':'red'}, id='fail'),
-                                ],
+                                dbc.Card(
+                                    [
+                                        dbc.CardHeader(Lottie(options=options, width="17%", height="17%", url="/failure", speed=0.595)),
+                                        dbc.CardBody(
+                                            [
+                                                html.H4('Authentication failure'),
+                                                html.H4('--', style={'fontSize':30, 'color':'red'}, id='fail'),
+                                            ],
+                                        ),
+                                    ],
+                                ),
                                 style=COL_STYLE,
                             ),
                             dbc.Col(
-                                [
-                                    html.H4('Authentication success'),
-                                    html.H4('--', style={'fontSize':30, 'color':'green'}, id='success'),
-                                ],
+                                dbc.Card(
+                                    [
+                                        dbc.CardHeader(Lottie(options=options, width="17%", height="17%", url="/success", speed=0.8)),
+                                        dbc.CardBody(
+                                            [
+                                                html.H4('Authentication success'),
+                                                html.H4('--', style={'fontSize':30, 'color':'green'}, id='success'),
+                                            ],
+                                        ),
+                                    ],
+                                ),
                                 style=COL_STYLE,
                             ),
                         ],
