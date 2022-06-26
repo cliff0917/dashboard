@@ -1,6 +1,6 @@
 import dash_bootstrap_components as dbc
 from dash import dcc, html, callback
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output, State, ALL
 
 from process_time import process_time
 from components import fields, datePicker, discover_display, collapse_item, alert
@@ -13,7 +13,6 @@ hitNum = html.H1(
     ],
     style={'textAlign': 'center'}, id='dataNum'
 )
-fields_bar = fields.fields_bar
 
 DISPLAY_STYLE = {
     "transition": "margin-left .5s",
@@ -33,7 +32,7 @@ def serve_layout(first):
         [
             dbc.Row(
                 [
-                    fields_bar,
+                    fields.serve_fields(),
                     dbc.Col(
                         [
                             dbc.Row(
@@ -59,8 +58,6 @@ def serve_layout(first):
     )
     return first, layout
 
-fields_btn = [Input(f'{i}', 'is_open') for i in range(len(collapse_item.add_collapse_combines))]
-
 # 初始化 display or 按下 Update 按鈕的觸發事件 or 利用 fields_btn 來動態 update display
 @callback(
     [
@@ -70,13 +67,14 @@ fields_btn = [Input(f'{i}', 'is_open') for i in range(len(collapse_item.add_coll
     ],
     [
         Input('submit_date', 'n_clicks'),
-        fields_btn,
+        Input({'type': 'add_btn', 'index': ALL}, 'n_clicks'),
+        Input({'type': 'del_btn', 'index': ALL}, 'n_clicks'),
     ],
     [
         State('datetime-picker', 'value')
     ]
 )
-def update(n_clicks, fields_btn, time):
+def update(n_clicks, add_btn, del_btns, time):
     # 將 time 轉成 timestamp format, 並得到 interval
     startDate, endDate, freqs = process_time.get_time_info(time)
     return discover_display.update(startDate, endDate, freqs)
