@@ -5,19 +5,19 @@ from dash import html, callback
 
 import globals
 
+field_style = {'margin-top':'7px', 'margin-left':'50px',"width": 150}
+add_btn_style = {'color':'green', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
+del_btn_style = {'color':'red', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
+
 def serve_btns():
-    # 新增 fields_btn
-    add_collapse_combines = []
-    del_collapse_combines = []
-    field_style = {'margin-top':'7px', 'margin-left':'50px',"width": 150}
-    add_btn_style = {'color':'green', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
-    del_btn_style = {'color':'red', 'fontSize':10,'margin-top':'4.98px', 'margin-bottom':'5px', 'align':'center', "width": 50}
+    add_collapse_fields = []
+    del_collapse_fields = []
 
     for i in range(globals.fields_num):
         # 新增 add collapsed fields, btns
         field = globals.all_fields[i]
 
-        add_collapse_field = dbc.Collapse(
+        add_collapse_text = dbc.Collapse(
             html.P(field, style=field_style),
             id={'type': 'add_collapse_text', 'index': i},
             is_open=True,
@@ -27,18 +27,17 @@ def serve_btns():
             id={'type': 'add_collapse_btn', 'index': i},
             is_open=True,
         )
-        add_collapse_combine = dbc.Row(
+        add_collapse_field = dbc.Row(
             [
-                add_collapse_field,
+                add_collapse_text,
                 dbc.Col(style={"width": 70}),
                 add_collapse_btn,
             ]
         )
-
-        add_collapse_combines.append(add_collapse_combine)
+        add_collapse_fields.append(add_collapse_field)
 
         # 新增 del collapsed fields, btns
-        del_collapse_field = dbc.Collapse(
+        del_collapse_text = dbc.Collapse(
             html.P(field, style=field_style),
             id={'type': 'del_collapse_text', 'index': i},
             is_open=False,
@@ -48,16 +47,16 @@ def serve_btns():
             id={'type': 'del_collapse_btn', 'index': i},
             is_open=False,
         )
-        del_collapse_combine = dbc.Row(
+        del_collapse_field = dbc.Row(
             [
-                del_collapse_field,
+                del_collapse_text,
                 dbc.Col(style={"width": 70}),
                 del_collapse_btn,
             ]
         )
-        del_collapse_combines.append(del_collapse_combine)
+        del_collapse_fields.append(del_collapse_field)
 
-    return add_collapse_combines, del_collapse_combines
+    return add_collapse_fields, del_collapse_fields
 
 @callback(
     [

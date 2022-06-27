@@ -8,9 +8,12 @@ def initialize():
     dir_path = '.'  # /var/ossec/logs/alerts
     selected_fields = []
     client, posts, num, current_db, = get_db.get_current_db(dir_path, sudoPassword)
+    all_fields, fields_num = get_fields(posts)
+    add_next_click = [1 for i in range(fields_num)]
+
+def get_fields(posts):
     data = posts.find({}, {'_id':0})
     df = pd.json_normalize(data)
     all_fields = list(df.columns)
     all_fields.remove('timestamp')
-    fields_num = len(all_fields)
-    add_next_click = [1 for i in range(fields_num)]
+    return all_fields, len(all_fields)
