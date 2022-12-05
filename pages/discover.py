@@ -3,7 +3,7 @@ from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State, ALL
 
 from process_time import process_time
-from components import fields, datePicker, discover_display, collapse_item, alert
+from components import fields, datePicker, discover_display, collapse_item
 
 # components
 hitNum = html.H1(
@@ -16,18 +16,15 @@ hitNum = html.H1(
 
 DISPLAY_STYLE = {
     "transition": "margin-left .5s",
-    "margin-top": 35,
     "padding": "1rem 1rem",
     "background-color": "#f8f9fa",
     'fontSize': 10,
-    'border':'1px black solid',
+    # 'border':'1px black solid',
     'width': '1px',
     'zIndex':1,
 }
 
-def serve_layout(first):
-    first, notification = alert.update_notification(first)
-
+def serve_layout():
     layout = html.Div(
         [
             dbc.Row(
@@ -38,7 +35,6 @@ def serve_layout(first):
                             dbc.Row(
                                 [
                                     datePicker.discover_date_picker(),   # live update
-                                    notification,
                                 ]
                             ),
                             dcc.Loading(
@@ -56,7 +52,7 @@ def serve_layout(first):
             ),
         ],
     )
-    return first, layout
+    return layout
 
 # 初始化 display or 按下 Update 按鈕的觸發事件 or 利用 fields_btn 來動態 update display
 @callback(

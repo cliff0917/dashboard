@@ -3,8 +3,6 @@ import dash_bootstrap_components as dbc
 from dash import html
 from datetime import datetime, timedelta
 
-from components import alert
-
 # 新的 datepicker 統一 time format
 def current_time():
     dateFormat = "%Y-%m-%d %H:%M:%S"

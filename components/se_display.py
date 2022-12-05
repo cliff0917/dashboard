@@ -56,7 +56,7 @@ def update(startDate, endDate, freqs):
     # 若無資料
     if len(area_fig.data) == 0:
         no_data = [0 for i in range(4)]
-        msg = html.H1('此區間無資料', style={'fontSize':40, 'margin-left':850, 'margin-top':100})
+        msg = html.H1('此區間無資料', style={'fontSize':40, 'margin-left':700, 'margin-top':100, 'textAlign': 'center'})
         no_data += [msg, '']
         no_data.insert(0, f'從 {startDate} 到 {endDate}')
         return no_data

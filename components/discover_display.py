@@ -7,7 +7,10 @@ from plot import bar
 from components.se_display import CONFIG
 
 global CONFIG
-BAR_STYLE = {'border':'1px black solid', 'zIndex':1}
+BAR_STYLE = {
+    # 'border':'1px black solid',
+    'zIndex':1
+}
 
 def update(startDate, endDate, freqs):
     global CONFIG

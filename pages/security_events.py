@@ -4,19 +4,18 @@ from dash.dependencies import Input, Output, State
 from dash_extensions import Lottie
 
 from process_time import process_time
-from components import datePicker, se_display, alert
+from components import datePicker, se_display
 
 options = dict(loop=True, autoplay=True, rendererSettings=dict(preserveAspectRatio='xMidYMid slice'))
 
 DISPLAY_STYLE = {
     "transition": "margin-left .5s",
-    "margin-top": 47,
     "margin-left": 5,
     "padding": "1rem 1rem",
     "background-color": "#f8f9fa",
     'fontSize': 10,
     'zIndex': 1,
-    'border': '1px black solid',
+    # 'border': '1px black solid',
     'zIndex': 2,
 }
 
@@ -25,9 +24,7 @@ COL_STYLE = {
    'textAlign': 'center',
 }
 
-def serve_layout(first):
-    first, notification = alert.update_notification(first)
-
+def serve_layout():
     layout = html.Div(
         [
             dbc.Row(
@@ -37,14 +34,14 @@ def serve_layout(first):
                             dbc.Row(
                                 [
                                     datePicker.se_date_picker(), # live update
-                                    notification,
                                 ],
-                            )
+                            ),
                         ],
                         style=DISPLAY_STYLE,
                     ),
                 ],
             ),
+            dbc.Row(style={"height": "15px"}),
             dcc.Loading(
                 [
                     dbc.Row(
@@ -106,19 +103,18 @@ def serve_layout(first):
                                 style=COL_STYLE,
                             ),
                         ],
-                        style={'margin-top':10},
                     ),
                     dbc.Row(
-                        id='graph-frist-row',
+                        id='graph-frist-row'
                     ),
                     dbc.Row(
-                        id='graph-second-row',
+                        id='graph-second-row'
                     ),
                 ],
             ),
         ],
     )
-    return first, layout
+    return layout
 
 # 初始化 display or 按下 Update 按鈕的觸發事件
 @callback(

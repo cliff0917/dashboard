@@ -5,16 +5,14 @@ from components import collapse_item
 
 FIELD_STYLE = {
     "transition": "margin-left .5s",
-    "margin-top": 35,
-    "margin-left": "15px",
     "margin-right": "15px",
-    "padding": "2rem 1rem",
+    # "padding": "2rem 1rem",
     "background-color": "#f8f9fa",
     'fontSize': 10,
     'width':335,
     "maxHeight": "738px",
     'zIndex':1,
-    'border':'1px black solid',
+    # 'border':'1px black solid',
     "overflow": "scroll",
 }
 
