@@ -52,7 +52,7 @@ def serve_layout():
                                         dbc.CardHeader(Lottie(options=options, width="23%", height="23%", url="/total", speed=2.01)),
                                         dbc.CardBody(
                                             [
-                                                html.H4('Total'),
+                                                html.H4('Total', style={'fontSize':20}),
                                                 html.H4('--', style={'fontSize':30, 'color':'blue'}, id='total'),
                                             ],
                                         ),
@@ -66,7 +66,7 @@ def serve_layout():
                                         dbc.CardHeader(Lottie(options=options, width="15%", height="15%", url="/alert", speed=1.01)),
                                         dbc.CardBody(
                                             [
-                                                html.H4('Level 12 or above alerts'),
+                                                html.H4('Level 12 or above alerts', style={'fontSize':20}),
                                                 html.H4('--', style={'fontSize':30, 'color':'red'}, id='level12'),
                                             ],
                                         ),
@@ -80,7 +80,7 @@ def serve_layout():
                                         dbc.CardHeader(Lottie(options=options, width="17%", height="17%", url="/failure", speed=0.551)),
                                         dbc.CardBody(
                                             [
-                                                html.H4('Authentication failure'),
+                                                html.H4('Authentication failure', style={'fontSize':20}),
                                                 html.H4('--', style={'fontSize':30, 'color':'red'}, id='fail'),
                                             ],
                                         ),
@@ -94,7 +94,7 @@ def serve_layout():
                                         dbc.CardHeader(Lottie(options=options, width="17%", height="17%", url="/success", speed=0.81)),
                                         dbc.CardBody(
                                             [
-                                                html.H4('Authentication success'),
+                                                html.H4('Authentication success', style={'fontSize':20}),
                                                 html.H4('--', style={'fontSize':30, 'color':'green'}, id='success'),
                                             ],
                                         ),
